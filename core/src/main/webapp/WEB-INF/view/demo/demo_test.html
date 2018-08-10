@@ -1,0 +1,1383 @@
+<#include "../include/header.html">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<!-- Button 常用API  -->
+<!-- 给Button添加icon图标 -->
+<button id="button1" type="button"><@spring.message "hap.query"/></button>
+<script>
+    $("#button1").kendoButton({
+        icon: "search"
+    });
+</script>
+
+<!-- 给button添加图片样式 -->
+<button id="button2" type="button"><@spring.message "hap.query"/></button>
+<script>
+    $("#button2").kendoButton({
+        imageUrl: "${base.contextPath}/resources/upload/favicon.png"
+    });
+</script>
+
+<!-- 给button添加一个或多个自定义样式 -->
+<button id="button3" type="button"><@spring.message "hap.query"/></button>
+<style>
+    .btn-style{
+        background: #0d7fdd;
+        width: 30px;
+        height: 30px;
+        border-radius: 100%;
+    }
+</style>
+<script>
+    $("#button3").kendoButton({
+        spriteCssClass: "btn-style"
+    });
+</script>
+<!-- click事件 -->
+<span id="query-btn1" class="btn btn-primary" data-bind="click:query"><i class="fa fa-search"></i> <@spring.message "hap.query"/></span>
+<script>
+    $("#query-btn1").kendoButton({
+        click:function (e) {
+            alert(e.event.target.tagName);  //SPAN
+        }
+    });
+</script>
+<!-- button禁用 -->
+<div id="button4">Button</div>
+<script>
+    var button = $("#button4").kendoButton({
+    }).data("kendoButton");
+    button.enable(false);
+</script>
+
+<!-- 使用jQuery给Button添加disabled属性，并移除其绑定事件 -->
+<!-- 非DOM0级事件 -->
+<span id="query-btn2" class="btn btn-primary" data-bind="click:query"><i class="fa fa-search"></i> <@spring.message "hap.query"/></span>
+<script>
+    $("#query-btn2").attr("disabled","disabled").unbind();
+</script>
+<!-- DOM0级事件(用onclick属性直接将事件方法写在HTML标签内) -->
+<span id="query-btn3" class="btn btn-primary" onclick="query()"><i class="fa fa-search"></i> <@spring.message "hap.query"/></span>
+<script>
+    $("#query-btn3").attr({"disabled":"disabled","onclick":null});
+</script>
+<!-- 通过更改i标签的样式，来更改button的样式 -->
+<!-- 只需要将i标签的class替换成FontAwesome官网提供的样式类名就能更改成对应的图标 -->
+<span id="query-btn" class="btn btn-primary" onclick="query()"><i class="fa fa-search"></i> <@spring.message "hap.query"/></span>
+
+<!-- DateTimePicker常用API (83 到 222 行)-->
+<!-- 配置 -->
+<!--
+作用：配置DataTimePicker打开，关闭时的动画。
+值集：Object。
+子配置：
+a)	close 关闭时的动画配置
+b)	open 开打时的动画配置
+c)	effects 动画效果
+d)	duration 持续时间(ms)
+-->
+<input id="datetimepicker"/>
+<script>
+    $("#datetimepicker").kendoDateTimePicker({
+        animation: {
+            open: {
+                effects: "zoom:in",
+                duration: 1000
+            },
+            close: {
+                effects: "zoom:out",
+                duration: 1000
+            }
+        }
+    });
+</script>
+
+<!-- 配置每周禁用选择的日期(天数范围) -->
+<script>
+    $("#datetimepicker").kendoDateTimePicker({
+        disableDates: ["sat", "sun"],  //周六，周天不能被选择
+    });
+</script>
+
+<!-- 日期格式化 -->
+<script>
+    $("#datetimepicker").kendoDateTimePicker({
+        format: "yyyy-MM-dd HH:mm:ss"
+    });
+</script>
+<!--
+4)	max/min
+作用：设置最大日期，最小日期。
+5)	value
+作用：设置默认值。
+-->
+
+<!-- 方法 -->
+<!-- 关闭、打开组件 -->
+<script>
+    var datetimepicker = $("#datetimepicker").kendoDateTimePicker().data("kendoDateTimePicker");
+    $("#close").click(function() {
+        datetimepicker.close("date");
+    });
+    $("#open").click(function() {
+        datetimepicker.open("date");
+    });
+    $("#toggle").click(function() {
+        datetimepicker.toggle("date");
+    });
+</script>
+
+<!-- 设置最大值，最小值 -->
+<script>
+    var datetimepicker = $("#datetimepicker").kendoDateTimePicker().data("kendoDateTimePicker");
+    datetimepicker.max(new Date(2018, 0, 1));
+    datetimepicker.min(new Date(2017, 0, 1));
+</script>
+
+<!-- 设置启用、禁用、只读 -->
+<script>
+    var datetimepicker = $("#datetimepicker").kendoDateTimePicker().data("kendoDateTimePicker");
+    datetimepicker.readonly();  //只读
+    datetimepicker.readonly(false);  //取消只读
+    datetimepicker.enable();  //启用
+    datetimepicker.enable(false);  //禁用
+</script>
+<!--
+4)	value
+作用：有参数时为设置值，无参数时获取值
+ -->
+
+<!-- 重新设置配置 -->
+<script>
+    var datetimepicker = $("#datetimepicker").kendoDateTimePicker().data("kendoDateTimePicker");
+    datetimepicker.setOptions({
+        min: new Date(2017, 1, 1)
+    });
+</script>
+
+<!-- 事件 -->
+<!--
+1)	open/close
+作用：组件打开，关闭时候触发
+2)	change
+作用：值发生改变时候触发
+-->
+<script>
+    $("#datetimepicker").kendoDateTimePicker({
+        change: function() {
+            console.log(this.value());
+        },
+        open: function () {
+            console.log("open");
+        },
+        close: function () {
+            console.log("close");
+        }
+    });
+</script>
+
+<!-- 常用技巧 -->
+<!-- 普通写法 -->
+<input id="startDate">
+<input id="endDate">
+<script>
+    //开始时间
+    var start = $("#startDate").kendoDateTimePicker({
+        change: dateChange,
+        format: "yyyy-MM-dd HH:mm:ss",
+    }).data("kendoDateTimePicker");
+
+    //结束时间
+    var end = $("#endDate").kendoDateTimePicker({
+        change: dateChange,
+        format: "yyyy-MM-dd HH:mm:ss",
+    }).data("kendoDateTimePicker");
+
+    //获取时间组件的最大值，最小值
+    var maxDate = end.max(),
+        minDate = end.min();
+
+    //时间改变时，重新设置开始时间的最大值与结束时间的最小值
+    function dateChange() {
+        var startDate = start.value(),
+            endDate = end.value();
+        if (startDate && endDate){
+            end.min(startDate);
+            start.max(endDate);
+        }else if (!startDate && endDate){
+            end.min(minDate);
+            start.max(endDate);
+        }else if (startDate && !endDate){
+            end.min(startDate);
+            start.max(maxDate);
+        }else if (!startDate && !endDate){
+            end.min(minDate);
+            start.max(maxDate);
+        }
+    }
+</script>
+<!-- Grid表格中的写法 -->
+<!--
+//开始日期
+{
+    field: "startDate",
+    title: '开始日期',
+    format: "{0:yyyy-MM-dd HH:mm:ss}",
+    editor: function (container, options) {
+        //获取开始日期最大值,没有则为undefined
+        var max = options.model.endDate || undefined;
+        $('<input name="' + options.field + '"/>')
+            .appendTo(container)
+            .kendoDateTimePicker({
+                format: "yyyy-MM-dd HH:mm:ss",
+                max: max
+            });
+    }
+},
+//结束日期
+{
+    field: "endDate",
+    title: '结束日期',
+    format: "{0:yyyy-MM-dd HH:mm:ss}",
+    editor: function (container, options) {
+        //获取结束日期最小值,没有则为undefined
+        var min = options.model.startDate || undefined;
+        $('<input name="' + options.field + '"/>')
+            .appendTo(container)
+            .kendoDateTimePicker({
+                format: "yyyy-MM-dd HH:mm:ss",
+                min: min
+            });
+    }
+}
+
+-->
+
+
+<!-- DropDownList常用 API (269 到 589 行) -->
+<!-- 配置 -->
+<!--
+1)	animation
+见DateTimePicker animation。
+2)	cascadeFrom
+作用：关联父下拉框，组合成级联下拉框
+-->
+<input id="parent" >
+<input id="child" >
+<script>
+    //父下拉框
+    $("#parent").kendoDropDownList({
+        dataTextField: "parentName",
+        dataValueField: "parentId",
+        dataSource: [
+            { parentName: "上海市", parentId: 1 },
+            { parentName: "北京市", parentId: 2 }
+        ]
+    });
+    //子下拉框
+    $("#child").kendoDropDownList({
+        cascadeFrom: "parent",  //关联父元素id
+        dataTextField: "childName",
+        dataValueField: "childId",
+        dataSource: [ //通过parentId关联
+            { childName: "青浦区", childId: 1, parentId: 1 },
+            { childName: "东城区", childId: 2, parentId: 2 },
+            { childName: "黄浦区", childId: 3, parentId: 1 },
+            { childName: "朝阳区", childId: 4, parentId: 2 }
+        ]
+    });
+</script>
+
+
+<!--
+3)	cascadeFromField
+作用：指定子下拉框的某个字段与父下拉框的value值相关联，如果为指定则默认为父下拉框dataValueField相同的属性值。如(2)则为默认parentId与父下拉框相关联。
+-->
+<script>
+    //父下拉框
+    $("#parent").kendoDropDownList({
+        dataTextField: "parentName",
+        dataValueField: "parentId1",
+        dataSource: [
+            { parentName: "上海市", parentId1: 1 },
+            { parentName: "北京市", parentId1: 2 }
+        ]
+    });
+    //子下拉框
+    $("#child").kendoDropDownList({
+        cascadeFrom: "parent",  //关联父元素id
+        cascadeFromField: "parentId2", //通过parentId2与父下拉框的value[parentId1]值相关联
+        dataTextField: "childName",
+        dataValueField: "childId",
+        dataSource: [
+            { childName: "青浦区", childId: 1, parentId2: 1 },
+            { childName: "东城区", childId: 2, parentId2: 2 },
+            { childName: "黄浦区", childId: 3, parentId2: 1 },
+            { childName: "朝阳区", childId: 4, parentId2: 2 }
+        ]
+    });
+</script>
+
+
+<!--
+4)	dataSource
+作用：为下拉框提供数据源。
+值集：可为JavaScript普通数组，JavaScript对象数组，kendo.data.DataSource对象。
+5)	dataTextField/dataValueField
+作用：显示值/存储值(一般用于后台交互使用，即对应viewModel绑定的value值)。
+值集：String，下拉框所用数据源中对象的属性值。
+默认值：””。
+6)	enable
+作用：用于启用/禁用。
+值集：Boolean。
+默认值：ture。
+7)	filter
+作用：搜索过滤策略。
+值集：startswith, endswith, contains,none。
+默认值：none。
+-->
+<script>
+    $("#parent").kendoDropDownList({
+        //startswith 搜索数据源开头包含用户输入的值
+        //endswith 搜索数据源结尾包含用户输入的值
+        //contains 搜索数据源包含用户输入的值
+        filter: "contains",
+        dataSource: [
+            { parentName: "上海市"},
+            { parentName: "北京市"}
+        ],
+        dataTextField: "parentName",
+        dataValueField: "parentName",
+    });
+</script>
+
+<!--
+8)	delay
+作用：设置filter搜索后弹出区域的延迟时间(ms)。
+值集：Number。
+默认值：500(0.5秒)。
+9)	height
+作用：下拉框弹出区域的高度(px)。
+值集：Number，正整数。
+默认值：200。
+10)	ignoreCase
+作用：设置搜索时是否忽略大小写。
+值集：Boolean。
+默认值：true。
+11)	index
+作用：设置默认值，和value不同的是它的值集范围是索引
+-->
+<script>
+    $("#parent").kendoDropDownList({
+        dataSource: [
+            { parentName: "上海市"},
+            { parentName: "北京市"}
+        ],
+        dataTextField: "parentName",
+        dataValueField: "parentName",
+        index:1,
+    });
+</script>
+
+<!--
+12)	minLength
+作用：用户在执行过滤器之前必须输入的最少字符数。
+值集：Number。
+默认值：1。
+13)	text
+作用：设置下拉框的默认文字显示内容
+14)	value
+作用：设置下拉框默认值
+15)	valuePrimitive
+作用：如果设置为true，则视图模型字段将使用选定的项目值字段进行更新。如果设置为false，则视图模型字段将使用所选项目进行更新。
+默认：false
+-->
+<script>
+    $("#city").kendoDropDownList({
+        dataSource: [
+            { city: "上海市"},
+            { city: "北京市"}
+        ],
+        dataTextField: "city",
+        dataValueField: "city",
+        select:function (e) {
+            viewModel.model.set('city',e.dataItem.city);
+        }
+    });
+
+    $("#city").kendoDropDownList({
+        dataSource: [
+            { parentName: "上海市"},
+            { parentName: "北京市"}
+        ],
+        dataTextField: "parentName",
+        dataValueField: "parentName",
+        valuePrimitive: true,
+    });
+</script>
+<!--
+16)	optionLabel
+作用：定义默认空项目的文本，类似于input的placeholder。只有DropDownList组件有该属性，ComboBox组件可以直接写在html元素的placeholder上。
+值集：String。
+默认””
+-->
+<!-- 方法 -->
+<!--
+1)	open/close/toggle
+作用：开打/关闭组件，参考DateTimePicker。
+2)	enable/readonly
+作用：设置组件启用/禁用/只读，参考DateTimePicker。
+3)	value/text
+作用：获取或设置DropDownList的值/文本，参考DateTimePicker
+-->
+<!--
+4)	setDataSource
+作用：设置新的dataSource并重新绑定它
+ -->
+<input id="dropdownList">
+<script>
+    var dropdownList = $("#dropdownList").kendoDropDownList({
+        dataSource: [ "Apples", "Oranges" ]
+    }).data("kendoDropDownList");
+    var dataSource = new kendo.data.DataSource({
+        data: [ "Bananas", "Cherries" ]
+    });
+    dropdownList.setDataSource(dataSource);
+</script>
+<!--
+5)	select
+作用：获取或设置选定的项目
+ -->
+
+<!-- 事件 -->
+<!--
+1)	open/close
+2)	change/select 参考DateTimePicker。
+3)	dataBound
+作用：绑定到数据源的数据时触发。
+4)	filter
+作用：即将过滤数据源时触发
+-->
+
+<!-- DropDownList常用技巧 -->
+<!--
+在HAP中，为便于下拉框数据的维护，常在系统管理-代码维护中定义“快码”来作为下拉框的数据源。如系统通用flag，SYS.YES_NO
+-->
+<!-- 快码引入的方法 -->
+<script type="text/javascript" src="${base.contextPath}/common/code?flagData=SYS.YES_NO">
+</script>
+<!--
+该JavaScript脚本实际上是创建一个JavaScript对象数组，可以在浏览器中输入:
+localhost:8080/common/code?flagData=SYS.YES_NO
+-->
+<!--
+可以得到:
+var flagData=[{"objectVersionNumber":2,"codeId":10011,"codeValueId":10009,"description":null,"meaning":"是","value":"Y","orderSeq":1,"tag":null,"enabledFlag":"Y","parentCodeValueId":null,"parentCodeValueMeaning":null},{"objectVersionNumber":2,"codeId":10011,"codeValueId":10008,"description":null,"meaning":"否","value":"N","orderSeq":2,"tag":null,"enabledFlag":"Y","parentCodeValueId":null,"parentCodeValueMeaning":null}];
+-->
+<!--
+多个快码的引入方法：
+类似与get请求，用&将参数分割来创建多个JavaScript对象数组。
+<script type="text/javascript" src="${base.contextPath}/common/code?flagData=SYS.YES_NO&flagData2=SYS.YES_NO "></script>
+-->
+<script type="text/javascript" src="${base.contextPath}/common/code?flagData=SYS.YES_NO&flagData2=SYS.YES_NO "></script>
+
+<!-- 创建下拉框常用方法 -->
+<script type="text/javascript" src="${base.contextPath}/common/code?flagData=SYS.YES_NO"></script>
+<script>
+    var viewModel = kendo.observable({
+        model:{},
+    });
+</script>
+<input id="flag"/>
+<script>
+    kendo.bind($('#flag'), viewModel);
+    $("#flag").kendoDropDownList({
+        dataSource: flagData,
+        dataTextField: "meaning",
+        dataValueField: "value",
+        valuePrimitive: true,
+        select: function (e) {
+            //其他逻辑
+            // viewModel.model.set('meaning',e.dataItem.meaning);
+        }
+    });
+</script>
+
+<!--省，市，区三级快码-->
+<script type="text/javascript" src="${base.contextPath}/common/code?province=DMS_GPS_REGIONS_PROVINCE&city=DMS_GPS_REGIONS_CITY&area=DMS_GPS_REGIONS_AREA"></script>
+<input id="province1"/>
+<input id="city1"/>
+<input id="area1"/>
+<script>
+    $("#province1").kendoDropDownList({
+        dataSource: province,
+        dataTextField: "meaning",
+        dataValueField: "codeValueId",
+        valuePrimitive: true
+    });
+    $("#city1").kendoDropDownList({
+        dataSource: city,
+        dataTextField: "meaning",
+        dataValueField: "codeValueId",
+        valuePrimitive: true,
+        cascadeFrom: "province",
+        cascadeFromField: "parentCodeValueId",
+    });
+    $("#area1").kendoDropDownList({
+        dataSource: area,
+        dataTextField: "meaning",
+        dataValueField: "codeValueId",
+        valuePrimitive: true,
+        cascadeFrom: "city",
+        cascadeFromField: "parentCodeValueId",
+    });
+</script>
+
+
+<!-- 3.	通过url配置下拉框数据源 -->
+<input id="role1"/>
+<script>
+    //系统角色种类下拉框
+    $("#role1").kendoDropDownList({
+        filter: "contains",
+        dataTextField: "roleName",
+        dataValueField: "roleId",
+        valuePrimitive: true,
+        dataSource: {
+            transport:{
+                read: {
+                    url: "${base.contextPath}/sys/role/query?pageSize=10000"
+                }
+            },
+            schema: {
+                data: 'rows',
+            }
+        }
+    });
+</script>
+
+<!-- 4.	修改必输校验时背景设置 -->
+<!-- 在HAP中，动态给下拉框添加必输或去除必输条件时，存在颜色变化失效的BUG -->
+<input id="role"/>
+<script>
+    //系统角色种类下拉框
+    var role = $("#role").kendoDropDownList({
+        filter: "contains",
+        dataTextField: "roleName",
+        dataValueField: "roleId",
+        valuePrimitive: true,
+        dataSource: {
+            transport:{
+                read: {
+                    url: "${base.contextPath}/sys/role/query?pageSize=10000"
+                }
+            },
+            schema: {
+                data: 'rows',
+            }
+        }
+    }).data("kendoDropDownList");
+    //add required
+    $("#role").attr("required","required");
+    role.span.css("background-color", "#FFF8C5");
+    //remove required
+    $("#role").removeAttr("required");
+    role.span.css("background-color", "#FFF");
+</script>
+
+
+
+<!-- NumericTextBox常用 API (600 到 678 行)-->
+<!-- 配置 -->
+<!--
+1)	decimals
+作用：NumericTextBox鼠标focus时候的精度。
+值集：Number。
+-->
+<input id="numerictextbox" />
+<script>
+    var a = 1/3;
+    $("#numerictextbox").kendoNumericTextBox({
+        decimals: 4, //鼠标聚焦时精确到小数点第四位
+        value:a,
+    });
+</script>
+
+
+
+<!--
+2)	max/min/value
+参考DateTimePicker 常用API
+-->
+
+<!--
+3)	downArrowText/upArrowText/placeholder
+作用：鼠标放置在向下按钮/向上按钮时候，组件内容为空时候显示的文字
+值集：String。
+-->
+<script>
+    $("#numerictextbox").kendoNumericTextBox({
+        downArrowText: "减少",
+        upArrowText: "增加",
+        placeholder: "请设置值"
+    });
+</script>
+
+<!--
+4)	format
+作用：鼠标不focus时，显示数值的格式。
+值集：参考Kendo Number Formatting
+-->
+<script>
+    $("#numerictextbox").kendoNumericTextBox({
+        //format: "n0"  不保留小数,
+        //format: "n3" //保留3位小数
+        //format: "p0" //(百分比显示形式)不保留小数位
+        //format: "p3" //(百分比显示形式)保留3位小数
+    });
+</script>
+
+<!--
+5)	spinners
+作用：显示/隐藏向下/向上按钮
+值集：Boolean，默认true(显示)。
+6)	step
+作用：指定增加或减少小部件的固定值。
+默认：1。
+-->
+
+<!-- 方法 -->
+<!--
+1)	destroy/enable/readonly/max/min/value
+参考DateTimePicker API。
+2)	foucs
+作用：聚焦组件。
+3)	step
+作用：设置或获取组件的step值。
+-->
+
+<!-- 事件 -->
+<!--
+1)	change
+参考DateTimePicker API。
+ -->
+<!--
+2)	spin
+作用：当点击组件向下/向上按钮时触发
+-->
+<script>
+    $("#numerictextbox").kendoNumericTextBox({
+        spin: function() {
+            var value = this.value();
+            console.log(value);
+        }
+    });
+</script>
+
+<!-- Validator常用 API (687 到 808)-->
+<!-- 配置 -->
+<!--
+1)	errorTemplate
+作用：定义呈现验证消息的模板
+-->
+<form id="form">
+    <input name="username" required data-required-msg="必输"/> <br />
+    <button>Validate</button>
+</form>
+<script>
+    $("#form").kendoValidator({
+        errorTemplate: "<span style='background: red;'>#=message#</span>",
+    });
+</script>
+
+<!--
+2)	messages
+作用：给定验证规则验证失败将显示的一组消息（字符串或函数）
+-->
+<script>
+    $("#form").kendoValidator({
+        messages:{
+            customRule1: "必须大于1"
+        },
+        rules:{
+            //必须大于1
+            customRule1: function(input){
+                return input.val() > 1;
+            },
+        }
+    });
+</script>
+
+<!--
+3)	rules
+作用：自定义验证规则。
+4)	validateOnBlur
+作用：元素失去焦点时是否触发验证。默认值为true。
+-->
+
+<!-- 方法 -->
+<!--
+1)	errors
+作用：获取错误消息，转换成字符串数组
+-->
+<script>
+    var validator = $("#form").kendoValidator().data("kendoValidator");
+    $("#save").click(function() {
+        if (validator.validate() === false) {
+            var errors = validatable.errors();
+            console.log(errors); // ["username 为必填项"]
+        }
+    });
+</script>
+
+<!--
+2)	hideMessages
+作用：隐藏验证消息。
+3)	validate
+作用：根据声明的验证规则验证输入元素。验证成功返回true，失败返回false。
+-->
+
+<!--
+4)	validateInput
+作用：验证具体的表单元素
+-->
+<div id="form1">
+    <input name="username" required /> <br />
+    <input name="location" required /> <br />
+    <button>Validate</button>
+</div>
+<script>
+    var validator = $("#form1").kendoValidator().data("kendoValidator");
+    $("button").click(function() {
+        if (!validator.validateInput($("input[name=username]"))) {
+            alert("UserName is not valid!");
+        } else {
+            alert("UserName is valid!");
+        }
+    });
+</script>
+
+<!-- 事件 -->
+<!--
+1)	validate
+作用：验证时触发
+-->
+<script>
+    $("form").kendoValidator({
+        validate: function(e) {
+            console.log("valid" + e.valid);
+        }
+    });
+</script>
+
+
+<!-- Validator常用技巧 -->
+<!--
+1.	邮箱，电话验证
+在HAP中，如果要给input加入必输校验，仅需给其加上required属性，data-required-msg为提示内容，其他校验需要自己添加自定义校验，其中type=email的input组件自带对email格式的校验。
+-->
+<form>
+    <input class="k-textbox" type="email" name="email" id="email" required data-required-msg="邮箱为必填"><br>
+    <input class="k-textbox" id="phone" name="phone" required data-required-msg="电话为必填"><br>
+    <button id="save">Save</button>
+</form>
+<script>
+    var validator = $("form").kendoValidator({
+        messages: {
+            phone: "请输入正确格式的电话号码",
+        },
+        rules: {
+            phone: function(input) {
+                if (input.is("[name=phone]")) {
+                    return /^1(3|4|5|7|8)\d{9}$/.test(input.val())
+                }
+                return true;
+            }
+        }
+    }).data("kendoValidator");
+    $("#save").on("click",function (e) {
+        e.preventDefault();
+        if (validator.validate()){
+            alert("验证成功");
+        }
+    })
+</script>
+
+
+<!--
+2.	Grid中的自定义验证
+Gird中的自定义验证通常写在dataSource的schema属性上。
+-->
+<!--
+schema: {
+    data: 'rows',
+    total: 'total',
+    model: {
+        fields: {
+            phone: {
+                validation: {
+                    required: true,
+                    phoneValidation: function (input) {
+                        if (input.is("[name='phone']") && input.val() != "") {
+                            input.attr("data-phoneValidation-msg", "电话输入不合法");
+                            return /^1(3|4|5|7|8)\d{9}$/.test(input.val());
+                        }
+                        return true;
+                    }
+                }
+            }
+        }
+    }
+}
+-->
+
+<!-- TabStrip常用 API （848 到 995 行）-->
+<!-- 配置 -->
+<!--
+1)	animation
+参考DateTimePicker 常用API。
+-->
+<!--
+2)	contentUrls
+作用：如果特定的标签页通过Ajax加载，应该将URL设置为数组中相应的位置，并将其他元素设置为null。
+-->
+<div id="tabstrip">
+    <ul>
+        <li>Tab 1</li>
+        <li>Ajax Tab</li>
+    </ul>
+    <div>Content 1</div>
+    <div></div>
+</div>
+
+<script>
+    $("#tabstrip").kendoTabStrip({
+        contentUrls: [
+            null,
+            "http://localhost:8080/core/demo/demo_bank_branch.html"
+        ]
+    });
+</script>
+
+<!--
+3)	dataContentField
+作用：标签内容元素的文本内容
+-->
+
+<!--
+4)	dataContentUrlField
+作用： Ajax加载标签内容的URL
+-->
+<script>
+    $("#tabstrip").kendoTabStrip({
+        dataTextField: "Name",
+        dataContentField: "Content",
+        dataSource: [
+            { Name: "Tab1", Content: "Tab1: content" },
+            { Name: "Tab2", Content: "Tab2: content" }
+        ]
+    });
+</script>
+
+<!--
+5)	dataSource
+作用：设置数据源。
+6)	tabPosition
+作用：指定小部件选项卡的位置。有效值是"top"（默认）"left"，"right"和"bottom"。
+7)	navigatable
+作用：指定TabStrip是否应具有键盘导航功能，默认true
+-->
+
+<!-- 方法 -->
+<!--
+1)	activateTab/deactivateTab
+作用：激活/取消激活指定为选择器的选项卡
+-->
+<div id="tabstrip1">
+    <ul>
+        <li id="tab1">Tab 1</li>
+        <li id="tab2">Tab 2</li>
+    </ul>
+    <div>Content 1</div>
+    <div>Content 2</div>
+</div>
+<script>
+    var tabToActivate = $("#tab2");
+    $("#tabstrip1").kendoTabStrip().data("kendoTabStrip").activateTab(tabToActivate);
+</script>
+
+<!--
+2)	append/insertAfter/insertBefore
+作用：将选项卡追加/之后插入/之前插入到TabStrip中的选项卡集合中
+-->
+<script>
+    var tabStrip = $("#tabstrip").kendoTabStrip().data("kendoTabStrip");
+    tabStrip.append([
+        {
+            text: "<b>Item 2</b>",
+            encoded: false,
+            content: "text" //添加文本
+        },
+        {
+            text: "Item 3",
+            contentUrl: "http://localhost:8080/core/demo/demo_bank_branch.html" //添加ajax url
+        }]
+    );
+</script>
+
+<!--
+3)	contentElement/ contentHolder
+作用：通过TabStrip中的选项卡索引获取包含选项卡内容的DOM元素。contentElement和contentHolder之间的区别，是contentHolder返回真正拥有内容的DOM元素
+-->
+<script>
+    var tabStrip = $("#tabstrip").kendoTabStrip().data("kendoTabStrip");
+    console.log(tabStrip.contentElement(0));
+</script>
+
+<!--
+4)	destroy
+作用：安全地从DOM中删除TabStrip。
+-->
+
+<!--
+5)	enable/disable
+作用：启用/禁用一个或多个tab标签页
+-->
+<script>
+    var tabStrip = $("#tabstrip").kendoTabStrip().data("kendoTabStrip");
+    tabStrip.disable(tabStrip.tabGroup.children().eq(0));
+</script>
+
+<!--
+6)	items
+作用：获取选项卡的DOM元素的列表
+-->
+
+<!--
+7)	reload
+作用：通过AJAX重新载入TabStrip标签
+-->
+<script>
+    var tabStrip = $("#tabstrip").kendoTabStrip({
+        contentUrls: [
+            null,
+            "http://localhost:8080/core/demo/demo_test.html"
+        ]
+    }).data("kendoTabStrip");
+    tabStrip.reload("li:last");
+</script>
+
+<!--
+8)	remove
+作用：从TabStrip中删除指定的选项卡
+-->
+<script>
+    var tabStrip = $("#tabstrip").kendoTabStrip({
+        contentUrls: [
+            null,
+            "http://localhost:8080/home.html"
+        ]
+    }).data("kendoTabStrip");
+    tabStrip.remove("li:last");
+</script>
+
+<!--
+9)	select
+作用：获取/设置选定的选项卡。如果调用没有参数，它返回当前选中的选项卡
+-->
+<script>
+    tabStrip.select("li:last");     // Select by jQuery selector
+    tabStrip.select(1);          // Select by index
+</script>
+
+<!--
+10)	setDataSource
+作用：设置重新绑定tabstrip的dataSource
+-->
+
+<!-- 事件 -->
+<!--
+1)	activate
+作用：在tab页激活时候，并且其动画完成后触发。
+2)	contentLoad
+作用：当从AJAX请求获取内容时触发。
+3)	error
+作用：当AJAX请求导致错误时触发。
+4)	select
+作用：在选择标签之前触发。
+5)	show
+作用：在标签显示之后，但在动画结束之前触发
+-->
+
+
+<!-- Window常用API （1027 到 1102 行）-->
+<!-- 配置 -->
+<!--
+1)	animation
+参考DateTimePicker 常用API。
+-->
+<!--
+2)	actions
+作用：与窗口交互的按钮。预定义的数组值是"Close"(关闭), "Refresh"(最大化), "Minimize"(最小化), and "Maximize"(最大化)。
+-->
+<div id="dialog">
+</div>
+<script>
+    $("#dialog").kendoWindow({
+        actions: ["Refresh", "Minimize", "Maximize", "Close"]
+    });
+</script>
+
+<!--
+3)	autofocus
+作用：确定打开窗口时是否自动聚焦，默认true。
+-->
+
+<!--
+4)	content
+作用：指定窗口应从其加载内容或URL请求选项
+-->
+<script>
+    $("#dialog").kendoWindow({
+        actions: ["Refresh", "Minimize", "Maximize", "Close"],
+        content: "http://localhost:8080/core/demo/demo_bank_branch.html"
+    });
+</script>
+
+<!--
+5)	draggable
+作用：启用(true)或禁用(false)用户移动/拖动窗口小部件的功能。默认true
+6)	iframe
+作用：是否应创建内容iframe。
+7)	maxHeight/ maxWidth/ minHeight/ minWidth/height/width
+作用：设置调整窗口大小可以达到的最大高度/最大宽度/最小高度/最小宽度（单位：像素）,开打时窗口的高度/宽度。
+8)	modal
+作用：在窗口打开时是否显示模态框，默认false。
+9)	pinned
+作用：是否固定窗口，即在滚动期间不会与页面内容一起移动。默认false。
+-->
+
+<!--
+10)	position
+作用：用于定义窗口与父窗口的顶部和/或左侧位置
+-->
+<script>
+    $("#dialog").kendoWindow({
+        actions: ["Refresh", "Minimize", "Maximize", "Close"],
+        content: "http://localhost:8080/core/demo/demo_bank_branch.html",
+        pinned:true,
+        position: {
+            top: 100, // or "100px"
+            left: "20%"
+        }
+    });
+</script>
+
+<!--
+11)	resizable
+作用：启用（true）或禁用（false）用户调整窗口大小的功能。
+12)	scrollable
+作用：启用（true）或禁用（false）用户滚动窗口内容的功能。
+13)	title
+作用：设置窗口的标题。
+14)	visible
+作用：指定窗口最初是否可见
+-->
+
+<!-- 方法 -->
+<!--
+1)	center
+作用：居中窗口
+-->
+<script>
+    var dialog = $("#dialog").kendoWindow({
+        actions: ["Refresh", "Minimize", "Maximize", "Close"],
+        content: "http://localhost:8080/core/demo/demo_bank_branch.html",
+    }).data("kendoWindow");
+    dialog.center();
+</script>
+
+<!--
+2)	open/close
+作用：打开/关闭窗口。
+3)	content
+作用：获取或设置窗口的content。
+4)	destroy
+作用：销毁窗口及其模态框。
+5)	maximize/ minimize/ toggleMaximization/restore
+作用：最大/小化窗口, 恢复最大化或最小化的窗口到其以前的状态。
+6)	pin/ unpin
+作用：固定/取消固定窗口。
+7)	refresh
+作用：刷新窗口。
+8)	setOptions
+作用：窗口配置新的选项。
+9)	title
+作用：获取或设置窗口的标题。
+10)	toFront
+作用：将窗口的z-index设置为页面的最大值，即在窗口在最上层显示
+-->
+
+<!-- 事件 -->
+<!--
+1)	open/close/activate/deactivate/error/refresh
+参考TabStrip API。
+2)	resize
+作用：窗口大小改变时触发
+-->
+<!--
+3)	dragstart/dragend
+作用：当窗口被用户移动开始/结束时触发
+-->
+<!-- HAP常用开打Window方法 -->
+<!--<script>
+    /*催收流水号*/
+    {
+        field: "collectNumber",
+            title: '<@spring.message "催收流水号"/>',
+        width: 120,
+        attributes: {style: "text-align:center"},
+        headerAttributes: {
+            "class": "table-header-cell",
+                style: "text-align: center"
+        },
+        template: function (item) {
+            if (!!item.collectNumber){
+                return '<span onclick="openDetailWin(\''+item.collectNumber+'\',\''+item.collectMethod+'\')" style="color:#0d7fdd;cursor: pointer;">'+item.collectNumber+'</span>';
+            }else {
+                return item.collectNumber;
+            }
+        }
+    },
+
+
+    var detailWin
+    //开始催收信息查询窗口
+    function openDetailWin(collectNumber,collectMethod) {
+        if (collectNumber&&collectMethod){
+            var str = "";
+            if (collectMethod=="电话催收"){
+                str = 'ls_collect_info_phone.html?collectNumber='+collectNumber+'&readonly=1';
+            }else if (collectMethod=="上门催收"){
+                str = 'ls_collect_information.html?collectNumber='+collectNumber+'&readonly=1';
+            }else if (collectMethod=="锁车"){
+                str = 'ls_lock_requisition.html?collectNumber='+collectNumber+'&readonly=1';
+            }else if (collectMethod=="解锁"){
+                str = 'ls_unlock_requisition.html?collectNumber='+collectNumber+'&readonly=1';
+            }else if (collectMethod=="收车"){
+                str = 'ls_vehicle_recovery.html?collectNumber='+collectNumber+'&readonly=1';
+            }else if (collectMethod=="诉讼"){
+                str = 'ls_litigation.html?collectNumber='+collectNumber+'&readonly=1';
+            }
+            detailWin = $('#detail-win').kendoWindow({
+                actions: [ "Close" ,"Refresh"],
+                title: '详细信息',
+                visible: false,
+                iframe: true,
+                modal: true,
+                resizable:false,
+                draggable:false,
+                content: str,
+            }).data('kendoWindow');
+            detailWin.maximize().open();
+        }
+    }
+</script>-->
+
+
+<!-- MaskedTextBox 常用API （1210 到 1299 行）-->
+<!-- 配置 -->
+<!--
+1)	mask
+作用：设置掩码
+具体参考：
+0 – 数字。接受0到9之间的任何数字。
+9 – 数字或空格。接受0到9之间的任何数字，加上空格。
+# - 数字或空格，也允许（+）和（ - ）。
+L – 字母，相当正则表达式中的[a-zA-Z]。
+? – 字母或空格。
+& - 字符。接受任何字符，相当正则表达式中的\S。
+A – 字母和数字。
+a – 字母，数字和空格。
+. – 小数占位符。
+, - 千位的占位符。
+$ - 货币符号。
+ -->
+<input id="maskedtextbox" />
+<script>
+    $("#maskedtextbox").kendoMaskedTextBox({
+        mask: "(000) 000-0000"
+    });
+</script>
+
+
+<!--
+2)	promptChar
+作用：指定用于缺少用户输入的字符。默认“_”
+-->
+<script>
+    $("#maskedtextbox").kendoMaskedTextBox({
+        mask: "000000",
+        promptChar: " " //specify prompt char as empty char
+    });
+</script>
+
+<!--
+3)	rules
+作用：定义自定义掩码规则的对象
+-->
+<script>
+    $("#maskedtextbox").kendoMaskedTextBox({
+        mask: "~000",
+        rules: {
+            "~": /[+-]/
+        }
+    });
+
+    $("#maskedtextbox").kendoMaskedTextBox({
+        mask: "^000^",
+        rules: {
+            "^": function (char) {
+                return char === "^"; //allow ony "^" symbol
+            }
+        }
+    });
+</script>
+
+<!--
+4)	value
+作用：设置值
+-->
+<script>
+    $("#maskedtextbox").kendoMaskedTextBox({
+        mask: "(000) 000-000",
+        value: "(123) 456-789"
+    });
+</script>
+
+<!-- 方法 -->
+<!--
+1)	enable/ destroy/ readonly/ value
+参考DateTimePicker API。
+-->
+<!--
+2)	raw
+作用：获取MaskedTextBox的未掩码值
+-->
+<!--<script>
+    var maskedtextbox = $("#maskedtextbox").kendoMaskedTextBox({
+        mask: "(000)-000",
+        value: "(123)-456"
+    }).data("kendoMaskedTextBox");
+    var raw = maskedtextbox.raw(); // "123456"
+</script>-->
+
+<!-- 事件 -->
+<!--
+1)	change
+参考DateTimePicker API。
+-->
+<!--
+电话号码实例。注意：MaskedTextBox存在一个致命的缺点，使用中文输入法时会导致校验失败。
+-->
+<script>
+    var phoneMask = $("#phoneMask").kendoMaskedTextBox({
+        mask: "^*0 0000 0000",
+        rules: {
+            "^": function (char) {
+                return  char === "1";
+            },
+            "*": function (char) {
+                return  ["3","4","5","7","8"].indexOf(char) !== -1;
+            }
+        }
+    }).data("kendoMaskedTextBox");
+</script>
+
+<!-- Upload 常用API （1315 到 1324 行）-->
+<!-- 配置 -->
+<!--
+1)	async
+作用：配置以异步方式上传文件的功能。
+a)	autoUpload
+作用：选择文件后是否立即上传，默认true。
+b)	batch
+作用：多个文件同时上传时，用于设置是否将所有文件的上传请求设置为同一个，默认为false。
+c)	saveUrl/removeUrl
+作用：后台处理保存/删除文件的url。
+d)	saveField/removeField
+作用：设置保存/删除文件时候请求表单字段的名称，和后台接受参数相对应。
+-->
+<input type="file" name="files" id="photos" />
+<script>
+    $("#photos").kendoUpload({
+        async: {
+            saveUrl: "${base.contextPath}/websocket/uploadFiles?${_csrf.parameterName}=${_csrf.token}",
+            autoUpload: false,
+            saveField:" files"
+        },
+    });
+</script>
+
+<!--
+2)	enabled
+作用：启用（true）或禁用（false）上传。
+3)	localization
+作用：本地化。HAP基本都给设置好了。
+4)	multiple
+作用：启用（true）或禁用（false）选择多个文件的功能。
+5)	showFileList
+作用：启用（true）或禁用（false）显示上传文件的文件列表的功能。
+-->
+
+<!-- 方法 -->
+<!--
+1)	destroy/enable/disable/toggle
+作用：删除/启用/禁用
+-->
+
+<!-- 事件 -->
+<!--
+1)	cancel
+作用：上传在进行中被取消时触发。
+2)	complete
+作用：上传都成功完成或发生错误时触发。
+3)	success/ error
+作用：上传成功/失败时触发。
+4)	progress
+作用：上传进度可用时候触发。
+5)	select
+作用：选择文件时触发。
+6)	remove
+作用：上传的文件即将被删除时触发
+-->
+
+<!--
+7)	upload
+作用：当一个或多个文件即将上传时触发。
+可以在upload中设置需要传给后台的参数:
+-->
+<!--
+    upload: function (e) {
+        e.data = {
+            sourceCode : "${RequestParameters.sourceCode!''}",
+            sourceHeaderId  : "${RequestParameters.sourceHeaderId!''}",
+            uploadPath: uploadPath,
+            pictureTypeCode  : "${RequestParameters.pictureTypeCode!''}",
+            sourceLineId  : "${RequestParameters.sourceLineId!''}",
+        }
+    },
+-->
+
+
+<!-- 测试工作流 -->
+<input id="amount" type="text" name="amount" placeholder="金额"/>
+<input id="credit" type="text" name="credit" placeholder="信用度"/>
+<input id="test" type="button" value="测试工作流"/>
+
+</body>
+</html>
