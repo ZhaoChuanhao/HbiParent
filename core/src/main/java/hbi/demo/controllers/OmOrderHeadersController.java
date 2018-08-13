@@ -53,6 +53,19 @@ import java.util.List;
         return new ResponseData(service.myBatchUpdate(requestCtx, dto));
     }
 
+    @RequestMapping(value = "/hap/om/order/headers/updateOrderStatus")
+    @ResponseBody
+    public ResponseData updateOrderStatus(OmOrderHeaders dto, BindingResult result, HttpServletRequest request){
+        //getValidator().validate(dto, result);
+        if (result.hasErrors()) {
+            ResponseData responseData = new ResponseData(false);
+            responseData.setMessage(getErrorMessage(result, request));
+            return responseData;
+        }
+        IRequest requestCtx = createRequestContext(request);
+        return new ResponseData(service.updateOrderStatus(requestCtx, dto));
+    }
+
     @RequestMapping(value = "/hap/om/order/headers/remove")
     @ResponseBody
     public ResponseData delete(HttpServletRequest request,@RequestBody List<OmOrderHeaders> dto){

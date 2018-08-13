@@ -36,6 +36,15 @@ public interface IOmOrderHeadersService extends IBaseService<OmOrderHeaders>, Pr
     List<OmOrderHeaders> myBatchUpdate(IRequest request, List<OmOrderHeaders> omOrderHeadersList);
 
     /* *
+     * 修改订单状态
+     * @param [request, omOrderHeaders]
+     * @return java.util.List<hbi.demo.dto.OmOrderHeaders>
+     * @author chuanhao.zhao@hand-china.com
+     * @date 2018/8/13
+     */
+    List<OmOrderHeaders> updateOrderStatus(IRequest request, OmOrderHeaders omOrderHeaders);
+
+    /* *
      * 整单删除，删除整个订单头和订单明细
      * @param [request, omOrderHeaders]
      * @return int

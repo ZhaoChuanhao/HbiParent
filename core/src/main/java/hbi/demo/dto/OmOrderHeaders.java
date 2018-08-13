@@ -61,6 +61,7 @@ public class OmOrderHeaders extends BaseDTO {
      private String customerName; // 客户名称
 
      @NotNull
+     @Transient
      private Long orderAmount; //订单金额
 
      @NotNull

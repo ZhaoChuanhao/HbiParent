@@ -39,16 +39,18 @@
             });
         },
         removeFunction: function () {
-            $.ajax({
-                type : "POST",
-                url: "${base.contextPath}/hap/om/order/headers/wholeDelete?headerId=" + headerId,
-                contentType: "application/json",
-                success:function () {
-                    alert("删除成功")
-                    location.reload();
-                }
-            });
-        }
+            if($("#wholeDelete").attr("disabled") != "disabled"){
+                $.ajax({
+                    type : "POST",
+                    url: "${base.contextPath}/hap/om/order/headers/wholeDelete?headerId=" + headerId,
+                    contentType: "application/json",
+                    success:function () {
+                        alert("删除成功");
+                        location.reload();
+                    }
+                });
+            }
+        },
 
     });
 
@@ -91,6 +93,9 @@
 <body>
 <script src="${base.contextPath}/common/code?orderStatusData=HAP.OM.ORDER_STATUS"
         type="text/javascript"></script>
+<script src="${base.contextPath}/common/profile?submitFlag=HAP_OM_ORDER_SUBMIT_CTL&approveFlag=HAP_OM_ORDER_APPROVE_CTL"
+        type="text/javascript"></script>
+
 <div id="page-content">
     <div class="panel" id="query-form" style="...">
         <form class="form-horizontal" id="myForm">
@@ -120,9 +125,25 @@
                                     $("#companyId").kendoLov($.extend(${lovProvider.getLov(base.contextPath, base.locale, "HAP_ORG_COMPANY_NAME")}, {
                                         select: function () {
                                             viewModel.model.set('customerId', null);
+                                            $("#customerId").removeAttr("disabled");
+                                            $("#customerId").removeAttr("class");
+                                            $("#customerId").kendoLov($.extend(${lovProvider.getLov(base.contextPath, base.locale, "HAP_AR_CUSTOMER_NAME")}, {
+                                                query: function (e) {
+                                                    var companyId = $("#companyId").val();
+                                                    e.param['companyId'] = companyId;
+                                                }
+                                            }));
                                         },
                                         change: function () {
                                             viewModel.model.set('customerId', null);
+                                            $("#customerId").removeAttr("disabled");
+                                            $("#customerId").removeAttr("class");
+                                            $("#customerId").kendoLov($.extend(${lovProvider.getLov(base.contextPath, base.locale, "HAP_AR_CUSTOMER_NAME")}, {
+                                                query: function (e) {
+                                                    var companyId = $("#companyId").val();
+                                                    e.param['companyId'] = companyId;
+                                                }
+                                            }));
                                         }
                                     }));
                                 </script>
@@ -135,16 +156,8 @@
                             <label class="col-md-4 control-label"><@spring.message
                                 "客户名称"/></label>
                             <div class="col-xs-8">
-                                <input id="customerId" name="customerId" type="text" style="width:150px;margin-right:5px;" data-bind="value:model.customerId,text:model.customerName" required>
+                                <input id="customerId" name="customerId" type="text" style="width:150px;margin-right:5px;" data-bind="value:model.customerId,text:model.customerName" class="k-textbox" disabled>
                                 <div style=" width: 100px; position:absolute;z-index: 2;left:80%;top:-2px;"><span data-for="customerId" class="k-invalid-msg" ></span></div>
-                                <script>
-                                    $("#customerId").kendoLov($.extend(${lovProvider.getLov(base.contextPath, base.locale, "HAP_AR_CUSTOMER_NAME")}, {
-                                        query: function (e) {
-                                            var companyId = $("#companyId").val();
-                                            e.param['companyId'] = companyId;
-                                        }
-                                    }));
-                                </script>
                             </div>
                         </div>
                     </div>
@@ -207,19 +220,19 @@
                         <span id="save" class="btn btn-success k-grid-save-changes" data-bind="click:saveFunction" style="float:left;margin-right:5px;">
                             <i class="fa fa-save" style="margin-right:3px;"></i><@spring.message "hap.save"/>
                         </span>
-                        <span id="submit" class="btn btn-primary pull-left" style="float:left;margin-right:5px;" data-bind="click:submitFunction">
+                        <span id="submit" class="btn btn-primary pull-left" style="float:left;margin-right:5px;" onclick="updateOrderStatus('SUBMITED')">
                             <i class="fa fa-check-circle" style="margin-right:3px;"></i><@spring.message "hap.submit"/>
                         </span>
-                        <span id="approve" class="btn btn-primary pull-left" style="float:left;margin-right:5px;" data-bind="click:approveFunction">
+                        <span id="approve" class="btn btn-primary pull-left" style="float:left;margin-right:5px;" onclick="updateOrderStatus('APPROVED')">
                             <i class="fa fa-arrow-circle-right" style="margin-right:3px;"></i><@spring.message "hap.approve"/>
                         </span>
-                        <span id="reject" class="btn btn-warning pull-left" style="float:left;margin-right:5px;" data-bind="click:rejectFunction">
+                        <span id="reject" class="btn btn-warning pull-left" style="float:left;margin-right:5px;" onclick="updateOrderStatus('REJECTED')">
                             <i class="fa fa-times-circle" style="margin-right:3px;"></i><@spring.message "hap.reject"/>
                         </span>
                         <span id="wholeDelete" class="btn btn-danger pull-left"  style="float:left;margin-right:5px;" data-bind="click:removeFunction">
                             <i class="fa fa-trash-o" style="margin-right:3px;"></i><@spring.message "hap.whole_delete"/>
                         </span>
-                        <span id="print" class="btn btn-primary pull-left" style="float:left;margin-right:5px;" data-bind="click:printFunction">
+                        <span id="print" class="btn btn-primary pull-left" style="float:left;margin-right:5px;" onclick="printFunction()">
                             <i class="fa fa-file-excel-o" style="margin-right:3px;"></i><@spring.message "hap.document_printing"/>
                         </span>
                         <span id="back" class="btn btn-default pull-left" style="float:left;margin-right:5px;">
@@ -339,8 +352,6 @@
                     lineNumber:{ editable:false},
                     itemDescription:{ validation:{disabled:true}},
                     orderQuantityUom:{ validation:{disabled:true}},
-                    orderdQuantity:{ validation: {required: true, number: true}},
-                    unitSellingPrice:{ validation: {required: true, number: true}},
                     amount:{ editable:false},
                 }
             }
@@ -425,7 +436,7 @@
                     return dataItem['orderdQuantity'] || 0;
                 },
                 editor: function (container, options) {
-                    $('<input id="numerictextbox" required name="' + options.field +'" />')
+                    $('<input id="orderdQuantity" required name="' + options.field +'" />')
                         .appendTo(container)
                         .kendoNumericTextBox({
                             min: 0,
@@ -439,7 +450,20 @@
                     {
                 field: "unitSellingPrice",
                 title: '<@spring.message "hap.om.order.lines.unitsellingprice"/>',
-                width: 120
+                width: 120,
+                template: function (dataItem) {
+                    return dataItem['unitSellingPrice'] || 0;
+                },
+                editor: function (container, options) {
+                    $('<input id="unitSellingPrice" required name="' + options.field +'" />')
+                        .appendTo(container)
+                        .kendoNumericTextBox({
+                            min: 0,
+                            format: "n2",
+                            downArrowText: "减少",
+                            upArrowText: "增加",
+                        });
+                }
             },
                     {
                 field: "amount",
@@ -506,6 +530,30 @@
         editable: true
     });
 
+    $("#back").click(function () {
+        window.location.replace(document.referrer);
+    });
+
+    function printFunction () {
+        kendo.drawing.drawDOM($("*")).then(function (group) {
+            kendo.drawing.pdf.saveAs(group, "订单明细单据.pdf");
+        });
+    }
+
+    //根据按钮改变订单状态
+    function updateOrderStatus(orderStatus) {
+        $.ajax({
+            type : "POST",
+            url: "${base.contextPath}/hap/om/order/headers/updateOrderStatus",
+            data: {
+                headerId : headerId ,
+                orderStatus: orderStatus,
+            },
+            success:function () {
+                location.reload();
+            }
+        });
+    }
 
     //根据订单状态判断grid表格是否可以编辑，以及按钮是否可用
     if(viewModel.model.get("orderStatus") == "NEW"){
@@ -515,12 +563,14 @@
         $("#grid2").data("kendoGrid").setOptions({
             editable: true
         });
-        var approve = $("#approve").kendoButton({
-        }).data("kendoButton");
-        approve.enable(false);
-        var reject = $("#reject").kendoButton({
-        }).data("kendoButton");
-        reject.enable(false);
+
+        //根据权限使用配置维护控制按钮是否可用
+        if(submitFlag != "Y"){
+            $("#submit").attr({"disabled":"disabled","onclick":null});
+        }
+        //根据状态控制按钮是否可用（根据订单状态已设置按钮不可用，所以不再根据权限控制）
+        $("#approve").attr({"disabled":"disabled","onclick":null});
+        $("#reject").attr({"disabled":"disabled","onclick":null});
     }else if(viewModel.model.get("orderStatus") == "SUBMITED"){
         $("#grid1").data("kendoGrid").setOptions({
             editable: false
@@ -528,15 +578,14 @@
         $("#grid2").data("kendoGrid").setOptions({
             editable: false
         });
-        var save = $("#save").kendoButton({
-        }).data("kendoButton");
-        save.enable(false);
-        var submit = $("#submit").kendoButton({
-        }).data("kendoButton");
-        submit.enable(false);
-        var wholeDelete = $("#wholeDelete").kendoButton({
-        }).data("kendoButton");
-        wholeDelete.enable(false);
+        $("#save").attr({"disabled":"disabled","onclick":null});
+        $("#submit").attr({"disabled":"disabled","onclick":null});
+        $("#wholeDelete").enable(false);
+        //根据权限控制按钮是否可用
+        if(approveFlag != "Y"){
+            $("#approve").attr({"disabled":"disabled","onclick":null});
+            $("#reject").attr({"disabled":"disabled","onclick":null});
+        }
     }else if(viewModel.model.get("orderStatus") == "APPROVED"){
         $("#grid1").data("kendoGrid").setOptions({
             editable: false
@@ -544,21 +593,11 @@
         $("#grid2").data("kendoGrid").setOptions({
             editable: false
         });
-        var save = $("#save").kendoButton({
-        }).data("kendoButton");
-        save.enable(false);
-        var submit = $("#submit").kendoButton({
-        }).data("kendoButton");
-        submit.enable(false);
-        var approve = $("#approve").kendoButton({
-        }).data("kendoButton");
-        approve.enable(false);
-        var reject = $("#reject").kendoButton({
-        }).data("kendoButton");
-        reject.enable(false);
-        var wholeDelete = $("#wholeDelete").kendoButton({
-        }).data("kendoButton");
-        wholeDelete.enable(false);
+        $("#save").attr({"disabled":"disabled","onclick":null});
+        $("#submit").attr({"disabled":"disabled","onclick":null});
+        $("#approve").attr({"disabled":"disabled","onclick":null});
+        $("#reject").attr({"disabled":"disabled","onclick":null});
+        $("#wholeDelete").attr({"disabled":"disabled","onclick":null});
     }else{
         $("#grid1").data("kendoGrid").setOptions({
             editable: true
@@ -566,32 +605,21 @@
         $("#grid2").data("kendoGrid").setOptions({
             editable: true
         });
-        var approve = $("#approve").kendoButton({
-        }).data("kendoButton");
-        approve.enable(false);
-        var reject = $("#reject").kendoButton({
-        }).data("kendoButton");
-        reject.enable(false);
+        $("#approve").attr({"disabled":"disabled","onclick":null});
+        $("#reject").attr({"disabled":"disabled","onclick":null});
+        //根据权限控制按钮是否可用
+        if(submitFlag != "Y"){
+            $("#submit").attr({"disabled":"disabled","onclick":null});
+        }
     }
 
     // 新建订单时除保存和返回按钮以外，别的按钮不可用
     // （因为订单状态为新建时，审批和拒绝按钮已不可用，所以不再设置）
     if(headerId == 0){
-        var submit = $("#submit").kendoButton({
-        }).data("kendoButton");
-        submit.enable(false);
-        var wholeDelete = $("#wholeDelete").kendoButton({
-        }).data("kendoButton");
-        wholeDelete.enable(false);
-        var print = $("#print").kendoButton({
-        }).data("kendoButton");
-        print.enable(false);
+        $("#submit").attr({"disabled":"disabled","onclick":null});
+        $("#wholeDelete").attr({"disabled":"disabled","onclick":null});
+        $("#print").attr({"disabled":"disabled","onclick":null});
     }
-
-    $("#back").click(function () {
-        window.location.replace(document.referrer);
-    });
-
 
 </script>
 

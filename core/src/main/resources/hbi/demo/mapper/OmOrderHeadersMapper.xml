@@ -20,22 +20,32 @@
 
     <select id="selectOrderHeaders" parameterType="hbi.demo.dto.OmOrderHeaders" resultMap="BaseResultMap">
         SELECT
-            head.HEADER_ID,
-            head.ORDER_NUMBER,
-            head.COMPANY_ID,
-            com.COMPANY_NAME,
-            head.ORDER_DATE,
-            head.ORDER_STATUS,
-            head.CUSTOMER_ID,
-            cus.CUSTOMER_NAME,
-            head.ORDER_AMOUNT
+        head.HEADER_ID,
+        head.ORDER_NUMBER,
+        head.COMPANY_ID,
+        com.COMPANY_NAME,
+        head.ORDER_DATE,
+        head.ORDER_STATUS,
+        head.CUSTOMER_ID,
+        cus.CUSTOMER_NAME,
+        line.ORDER_AMOUNT
         FROM
-            hap_om_order_headers head,
-            hap_org_companys com,
-            hap_ar_customers cus
-        WHERE
-            head.COMPANY_ID = com.COMPANY_ID and
-            head.CUSTOMER_ID = cus.CUSTOMER_ID
+        hap_om_order_headers head
+        LEFT JOIN hap_org_companys com
+        ON head.COMPANY_ID = com.COMPANY_ID
+        LEFT JOIN hap_ar_customers cus
+        ON head.CUSTOMER_ID = cus.CUSTOMER_ID
+        LEFT JOIN
+        (
+            SELECT
+            HEADER_ID,
+            sum(ORDERD_QUANTITY*UNIT_SELLING_PRICE) as ORDER_AMOUNT
+            FROM
+            hap_om_order_lines
+            GROUP BY HEADER_ID
+        ) line
+        ON head.HEADER_ID = line.HEADER_ID
+        <where>
             <if test="headerId != null and headerId != ''">
                 AND head.HEADER_ID = #{headerId}
             </if>
@@ -58,7 +68,7 @@
                     WHERE INVENTORY_ITEM_ID = #{inventoryItemId}
                 )
             </if>
-
+        </where>
     </select>
 
     <select id="selectExcelData" parameterType="hbi.demo.dto.OmOrderHeaders" resultMap="BaseResultMap">
@@ -75,7 +85,7 @@
         line.UNIT_SELLING_PRICE,
         head.CUSTOMER_ID,
         cus.CUSTOMER_NAME,
-        head.ORDER_AMOUNT
+        line.ORDERD_QUANTITY*line.UNIT_SELLING_PRICE as ORDER_AMOUNT
         FROM
         hap_om_order_headers head
         LEFT JOIN hap_om_order_lines line

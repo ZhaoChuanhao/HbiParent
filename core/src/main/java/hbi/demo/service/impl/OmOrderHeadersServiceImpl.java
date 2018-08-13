@@ -12,6 +12,7 @@ import hbi.demo.dto.OmOrderHeaders;
 import hbi.demo.service.IOmOrderHeadersService;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -111,6 +112,30 @@ public class OmOrderHeadersServiceImpl extends BaseServiceImpl<OmOrderHeaders> i
             return omOrderHeadersList;
         }
         return null;
+    }
+
+    @Override
+    public List<OmOrderHeaders> updateOrderStatus(IRequest request, OmOrderHeaders omOrderHeaders) {
+        List<OmOrderHeaders> omOrderHeadersList = new ArrayList<>();
+        if(omOrderHeaders != null){
+            String orderStatus = omOrderHeaders.getOrderStatus();
+            //查询订单信息
+            omOrderHeaders = omOrderHeadersService.selectByPrimaryKey(request, omOrderHeaders);
+
+            if("SUBMITED".equals(orderStatus) && ("NEW".equals(omOrderHeaders.getOrderStatus()) || "REJECTED".equals(omOrderHeaders.getOrderStatus()))){
+                omOrderHeaders.setOrderStatus(orderStatus);
+                omOrderHeadersService.updateByPrimaryKeySelective(request, omOrderHeaders);
+            }else if("APPROVED".equals(orderStatus) && "SUBMITED".equals(omOrderHeaders.getOrderStatus())){
+                omOrderHeaders.setOrderStatus(orderStatus);
+                omOrderHeadersService.updateByPrimaryKeySelective(request, omOrderHeaders);
+            }else if("REJECTED".equals(orderStatus) && "SUBMITED".equals(omOrderHeaders.getOrderStatus())){
+                omOrderHeaders.setOrderStatus(orderStatus);
+                omOrderHeadersService.updateByPrimaryKeySelective(request, omOrderHeaders);
+            }
+            omOrderHeadersList.add(omOrderHeaders);
+
+        }
+        return omOrderHeadersList;
     }
 
     @Override
