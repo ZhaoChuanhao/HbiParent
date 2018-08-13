@@ -58,7 +58,8 @@
         },
 
     });
-    //初始化头部数据
+
+    //初始化头部数据，回显头信息
     if(bankId){
         //如果存在headerId赋默认值
         viewModel.model.set("bankId",bankId);
@@ -183,10 +184,18 @@
                 </div>
                 <div class="row">
                     <div class="col-xs-4">
-                        <span class="btn btn-primary k-grid-add" style="float:left;margin-right:5px;" data-bind="click:create"><@spring.message "hap.new"/></span>
-                        <span class="btn btn-success k-grid-save-changes" data-bind="click:saveFunction" style="float:left;margin-right:5px;"><@spring.message "hap.save"/></span>
-                        <span  data-bind="click:remove" class="btn btn-danger" style="float:left;"><@spring.message "hap.delete"/></span>
-                        <span class="btn btn-primary pull-left" style="float:left; margin-left: 5px" data-bind="click:exportFunc"><@spring.message "hap.exportexcel"/></span>
+                        <span class="btn btn-primary k-grid-add" style="float:left;margin-right:5px;" data-bind="click:create">
+                            <i class="fa fa-plus-square" style="margin-right:3px;"></i><@spring.message "hap.new"/>
+                        </span>
+                        <span class="btn btn-success k-grid-save-changes" data-bind="click:saveFunction" style="float:left;margin-right:5px;">
+                            <i class="fa fa-save" style="margin-right:3px;"></i><@spring.message "hap.save"/>
+                        </span>
+                        <span  data-bind="click:remove" class="btn btn-danger" style="float:left;">
+                            <i class="fa fa-trash-o" style="margin-right:3px;"></i><@spring.message "hap.delete"/>
+                        </span>
+                        <span class="btn btn-primary pull-left" style="float:left; margin-left: 5px" data-bind="click:exportFunc">
+                            <i class="fa fa-file-excel-o" style="margin-right:3px;"></i><@spring.message "hap.exportexcel"/>
+                        </span>
                     </div>
                     <div class="col-xs-4"></div>
                     <div class="col-xs-4">

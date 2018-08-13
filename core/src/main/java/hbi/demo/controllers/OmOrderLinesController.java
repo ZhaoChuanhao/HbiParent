@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.validation.BindingResult;
+
+import java.util.ArrayList;
 import java.util.List;
 
     @Controller
@@ -26,20 +28,32 @@ import java.util.List;
     @ResponseBody
     public ResponseData query(OmOrderLines dto, @RequestParam(defaultValue = DEFAULT_PAGE) int page,
         @RequestParam(defaultValue = DEFAULT_PAGE_SIZE) int pageSize, HttpServletRequest request) {
+        if(dto.getHeaderId() == null || dto.getHeaderId() == 0){
+            return new ResponseData(new ArrayList<>());
+        }
         IRequest requestContext = createRequestContext(request);
-        return new ResponseData(service.select(requestContext,dto,page,pageSize));
+        OmOrderLines dto2 = new OmOrderLines();
+        dto2.setHeaderId(dto.getHeaderId());
+        return new ResponseData(service.selectOrderLines(requestContext,dto2,page,pageSize));
     }
 
     @RequestMapping(value = "/hap/om/order/lines/submit")
     @ResponseBody
     public ResponseData update(@RequestBody List<OmOrderLines> dto, BindingResult result, HttpServletRequest request){
-        getValidator().validate(dto, result);
+        //getValidator().validate(dto, result);
         if (result.hasErrors()) {
         ResponseData responseData = new ResponseData(false);
         responseData.setMessage(getErrorMessage(result, request));
         return responseData;
         }
         IRequest requestCtx = createRequestContext(request);
+        //查询最大行号
+        Long maxLineNumber = service.getMaxLineNumber();
+        //遍历集合，使每个OmOrderLines对象的行号加1
+        for (int i = 0; i < dto.size(); i++){
+            OmOrderLines omOrderLines = dto.get(i);
+            omOrderLines.setLineNumber(maxLineNumber + i + 1);
+        }
         return new ResponseData(service.batchUpdate(requestCtx, dto));
     }
 

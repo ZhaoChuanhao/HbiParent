@@ -199,12 +199,12 @@
                 template : function(item){
                     return item['companyName']||''
                 },
-                editor          : function (container, options) {
+                editor : function (container, options) {
                     $('<input name="' + options.field + '"/>')
                         .appendTo(container)
                         .kendoLov($.extend(<@lov "LOV_COMPANY"/>, {
                         textField: 'companyName',
-                        model    : options.model
+                        model: options.model
                     },{
                         query: function (e) {
                             e.param['enabledFlag'] = 'Y';

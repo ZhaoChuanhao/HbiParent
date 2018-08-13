@@ -99,9 +99,15 @@
                 </div>
                 <div class="row">
                     <div class="col-xs-4">
-                        <span class="btn btn-primary k-grid-add pull-left" style="float:left;margin-right:5px;" data-bind="click:newResource"><@spring.message "hap.new"/></span>
-                        <span class="btn btn-danger pull-left" data-bind="click:remove"  style="float:left;margin-right:5px;"><@spring.message "hap.delete"/></span>
-                        <span class="btn btn-primary pull-left" style="float:left;" data-bind="click:exportFunc"><@spring.message "hap.exportexcel"/></span>
+                        <span class="btn btn-primary k-grid-add pull-left" style="float:left;margin-right:5px;" data-bind="click:newResource">
+                            <i class="fa fa-plus-square" style="margin-right:3px;"></i><@spring.message "hap.new"/>
+                        </span>
+                        <span class="btn btn-danger pull-left" data-bind="click:remove"  style="float:left;margin-right:5px;">
+                            <i class="fa fa-trash-o" style="margin-right:3px;"></i><@spring.message "hap.delete"/>
+                        </span>
+                        <span class="btn btn-primary pull-left" style="float:left;" data-bind="click:exportFunc">
+                            <i class="fa fa-file-excel-o" style="margin-right:3px;"></i><@spring.message "hap.exportexcel"/>
+                        </span>
                     </div>
                     <div class="col-xs-4"></div>
                     <div class="col-xs-4">
@@ -233,8 +239,6 @@
                             });
                     }
 
-
-
                 },
                     {
                 field: "description",
@@ -286,7 +290,6 @@
             for (var i in originData){
                 //originData[i].enabledFlag = originData[i].enabledFlag == 'Y' ? '<@spring.message "hap.yes"/>' : '<@spring.message "hap.no"/>';
                 //时间转换
-                /!*originData[i].date = kendo.toString(kendo.parseDate(originData[i].date), "yyyy-MM-dd HH:mm:ss");*!/
                 originData[i].expirationDate = kendo.toString(kendo.parseDate(originData[i].expirationDate), "yyyy-MM-dd");
                 var v = originData[i].bankType;
                 $.each(bankTypeData, function (j, n) {

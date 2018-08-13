@@ -7,6 +7,8 @@ import com.hand.hap.mybatis.annotation.ExtensionAttribute;
 import org.hibernate.validator.constraints.Length;
 import javax.persistence.Table;
 import com.hand.hap.system.dto.BaseDTO;
+
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.NotEmpty;
 @ExtensionAttribute(disable=true)
@@ -42,6 +44,17 @@ public class OmOrderLines extends BaseDTO {
      @NotNull
      private Long inventoryItemId; //产品ID
 
+     @NotEmpty
+     @Length(max = 60)
+     @Transient
+     private String itemCode; //物料编码
+
+     @NotEmpty
+     @Length(max = 240)
+     @Transient
+     private String itemDescription;//物料描述
+
+
      @NotNull
      private Long orderdQuantity; //数量
 
@@ -58,6 +71,10 @@ public class OmOrderLines extends BaseDTO {
 
      @NotNull
      private Long companyId; //公司ID
+
+     @NotNull
+     @Transient
+     private Long amount; //金额
 
      @Length(max = 150)
      private String addition1; //附加信息1
@@ -187,4 +204,27 @@ public class OmOrderLines extends BaseDTO {
          return addition5;
      }
 
-     }
+    public Long getAmount() {
+        return amount;
+    }
+
+    public void setAmount(Long amount) {
+        this.amount = amount;
+    }
+
+    public String getItemCode() {
+        return itemCode;
+    }
+
+    public void setItemCode(String itemCode) {
+        this.itemCode = itemCode;
+    }
+
+    public String getItemDescription() {
+        return itemDescription;
+    }
+
+    public void setItemDescription(String itemDescription) {
+        this.itemDescription = itemDescription;
+    }
+}

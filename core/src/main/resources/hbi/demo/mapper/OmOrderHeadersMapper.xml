@@ -6,10 +6,111 @@
         <result column="HEADER_ID" property="headerId" jdbcType="DECIMAL" />
         <result column="ORDER_NUMBER" property="orderNumber" jdbcType="VARCHAR" />
         <result column="COMPANY_ID" property="companyId" jdbcType="DECIMAL" />
+        <result column="COMPANY_NAME" property="companyName" jdbcType="VARCHAR" />
         <result column="ORDER_DATE" property="orderDate" jdbcType="DATE" />
         <result column="ORDER_STATUS" property="orderStatus" jdbcType="VARCHAR" />
         <result column="CUSTOMER_ID" property="customerId" jdbcType="DECIMAL" />
+        <result column="CUSTOMER_NAME" property="customerName" jdbcType="VARCHAR" />
+        <result column="ORDER_AMOUNT" property="orderAmount" jdbcType="DECIMAL" />
+        <result column="ITEM_CODE" property="itemCode" jdbcType="VARCHAR" />
+        <result column="ITEM_DESCRIPTION" property="itemDescription" jdbcType="VARCHAR" />
+        <result column="ORDERD_QUANTITY" property="orderdQuantity" jdbcType="DECIMAL" />
+        <result column="UNIT_SELLING_PRICE" property="unitSellingPrice" jdbcType="DECIMAL" />
     </resultMap>
 
+    <select id="selectOrderHeaders" parameterType="hbi.demo.dto.OmOrderHeaders" resultMap="BaseResultMap">
+        SELECT
+            head.HEADER_ID,
+            head.ORDER_NUMBER,
+            head.COMPANY_ID,
+            com.COMPANY_NAME,
+            head.ORDER_DATE,
+            head.ORDER_STATUS,
+            head.CUSTOMER_ID,
+            cus.CUSTOMER_NAME,
+            head.ORDER_AMOUNT
+        FROM
+            hap_om_order_headers head,
+            hap_org_companys com,
+            hap_ar_customers cus
+        WHERE
+            head.COMPANY_ID = com.COMPANY_ID and
+            head.CUSTOMER_ID = cus.CUSTOMER_ID
+            <if test="headerId != null and headerId != ''">
+                AND head.HEADER_ID = #{headerId}
+            </if>
+            <if test="companyId != null and companyId != ''">
+                AND head.COMPANY_ID = #{companyId}
+            </if>
+            <if test="customerId != null and customerId != ''">
+                AND head.CUSTOMER_ID = #{customerId}
+            </if>
+            <if test="orderNumber != null and orderNumber != ''">
+                AND head.ORDER_NUMBER = #{orderNumber}
+            </if>
+            <if test="orderStatus != null and orderStatus != ''">
+                AND head.ORDER_STATUS = #{orderStatus}
+            </if>
+            <if test="inventoryItemId != null and inventoryItemId != ''">
+                AND head.HEADER_ID IN (
+                    SELECT HEADER_ID
+                    FROM hap_om_order_lines
+                    WHERE INVENTORY_ITEM_ID = #{inventoryItemId}
+                )
+            </if>
+
+    </select>
+
+    <select id="selectExcelData" parameterType="hbi.demo.dto.OmOrderHeaders" resultMap="BaseResultMap">
+        SELECT
+        head.HEADER_ID,
+        head.ORDER_NUMBER,
+        head.COMPANY_ID,
+        com.COMPANY_NAME,
+        head.ORDER_DATE,
+        head.ORDER_STATUS,
+        item.ITEM_CODE,
+        item.ITEM_DESCRIPTION,
+        line.ORDERD_QUANTITY,
+        line.UNIT_SELLING_PRICE,
+        head.CUSTOMER_ID,
+        cus.CUSTOMER_NAME,
+        head.ORDER_AMOUNT
+        FROM
+        hap_om_order_headers head
+        LEFT JOIN hap_om_order_lines line
+        ON head.HEADER_ID = line.HEADER_ID
+        LEFT JOIN hap_org_companys com
+        ON head.COMPANY_ID = com.COMPANY_ID
+        LEFT JOIN hap_ar_customers cus
+        ON head.CUSTOMER_ID = cus.CUSTOMER_ID
+        LEFT JOIN hap_inv_inventory_items item
+        ON line.INVENTORY_ITEM_ID = item.INVENTORY_ITEM_ID
+        <where>
+            <if test="headerId != null and headerId != ''">
+                AND head.HEADER_ID = #{headerId}
+            </if>
+            <if test="companyId != null and companyId != ''">
+                AND head.COMPANY_ID = #{companyId}
+            </if>
+            <if test="customerId != null and customerId != ''">
+                AND head.CUSTOMER_ID = #{customerId}
+            </if>
+            <if test="orderNumber != null and orderNumber != ''">
+                AND head.ORDER_NUMBER = #{orderNumber}
+            </if>
+            <if test="orderStatus != null and orderStatus != ''">
+                AND head.ORDER_STATUS = #{orderStatus}
+            </if>
+            <if test="inventoryItemId != null and inventoryItemId != ''">
+                AND head.HEADER_ID IN (
+                SELECT HEADER_ID
+                FROM hap_om_order_lines
+                WHERE INVENTORY_ITEM_ID = #{inventoryItemId}
+                )
+            </if>
+        </where>
+
+    </select>
 
 </mapper>
