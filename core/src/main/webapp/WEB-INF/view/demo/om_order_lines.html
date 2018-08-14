@@ -534,7 +534,7 @@
         window.location.replace(document.referrer);
     });
 
-    //打印pdf方法
+    //打印pdf函数
     function printFunction () {
         kendo.drawing.drawDOM($("*")).then(function (group) {
             kendo.drawing.pdf.saveAs(group, "订单明细单据.pdf");

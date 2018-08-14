@@ -83,7 +83,7 @@
                                     $("#customerId").kendoLov($.extend(${lovProvider.getLov(base.contextPath, base.locale, "HAP_AR_CUSTOMER_NAME")}, {
                                         query: function (e) {
                                             var companyId = $("#companyId").val();
-                                            e.param['companyId'] = companyId;
+                                            e.param['companyId'] = companyId; //入参处理
                                         }
                                     }));
                                 </script>
