@@ -42,11 +42,13 @@
             if($("#wholeDelete").attr("disabled") != "disabled"){
                 $.ajax({
                     type : "POST",
-                    url: "${base.contextPath}/hap/om/order/headers/wholeDelete?headerId=" + headerId,
-                    contentType: "application/json",
+                    url: "${base.contextPath}/hap/om/order/headers/wholeDelete",
+                    data:{
+                        headerId: headerId,
+                    },
                     success:function () {
                         alert("删除成功");
-                        location.reload();
+                        window.location.replace(document.referrer);
                     }
                 });
             }
