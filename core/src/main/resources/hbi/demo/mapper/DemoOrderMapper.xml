@@ -2,7 +2,7 @@
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="hbi.demo.mapper.DemoOrderMapper">
-    <resultMap id="BaseResultMap" type="hbi.demo.dto.DemoOrder">
+    <resultMap id="BaseResultMap" type="hbi.demo.dto.DemoOrder" extends="com.hand.hap.mapper.StdMapper.STD">
         <result column="ORDER_ID" property="orderId" jdbcType="DECIMAL" />
         <result column="ORDER_CODE" property="orderCode" jdbcType="VARCHAR" />
         <result column="ORDER_NAME" property="orderName" jdbcType="VARCHAR" />

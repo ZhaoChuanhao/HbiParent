@@ -1,22 +1,23 @@
 package hbi.demo.service.impl;
 
 import com.github.pagehelper.PageHelper;
+import com.hand.hap.code.rule.exception.CodeRuleException;
+import com.hand.hap.code.rule.service.ISysCodeRuleProcessService;
 import com.hand.hap.core.IRequest;
 import com.hand.hap.system.service.impl.BaseServiceImpl;
+import hbi.demo.dto.OmOrderHeaders;
 import hbi.demo.dto.OmOrderLines;
 import hbi.demo.mapper.OmOrderHeadersMapper;
+import hbi.demo.service.IOmOrderHeadersService;
 import hbi.demo.service.IOmOrderLinesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import hbi.demo.dto.OmOrderHeaders;
-import hbi.demo.service.IOmOrderHeadersService;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
-@Transactional(rollbackFor = Exception.class)
 public class OmOrderHeadersServiceImpl extends BaseServiceImpl<OmOrderHeaders> implements IOmOrderHeadersService{
 
     @Autowired
@@ -25,6 +26,8 @@ public class OmOrderHeadersServiceImpl extends BaseServiceImpl<OmOrderHeaders> i
     private IOmOrderLinesService omOrderLinesService;
     @Autowired
     private OmOrderHeadersMapper omOrderHeadersMapper;
+    @Autowired
+    private ISysCodeRuleProcessService codeRuleProcessService;
 
     @Override
     public List<OmOrderHeaders> selectOrderHeaders(IRequest request, OmOrderHeaders omOrderHeaders, int pageNum, int pageSize) {
@@ -34,16 +37,24 @@ public class OmOrderHeadersServiceImpl extends BaseServiceImpl<OmOrderHeaders> i
 
     @Override
     public List<OmOrderHeaders> selectExcelData(IRequest request, OmOrderHeaders omOrderHeaders, int pageNum, int pageSize) {
-        PageHelper.startPage(pageNum, pageSize);
+        //PageHelper.startPage(pageNum, pageSize);
         return omOrderHeadersMapper.selectExcelData(omOrderHeaders);
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public List<OmOrderHeaders> myBatchUpdate(IRequest request, List<OmOrderHeaders> omOrderHeadersList) {
         if (omOrderHeadersList != null && !omOrderHeadersList.isEmpty()) {
             for (OmOrderHeaders omOrderHeaders: omOrderHeadersList) {
                 //用于计算订单总金额
                 Long orderAmount = omOrderHeaders.getOrderAmount();
+                //用编码规则生成销售订单号
+                try {
+                    String orderNumber = codeRuleProcessService.getRuleCode("HAP_RULE_DEMO_ORDER_NUMBER");
+                    omOrderHeaders.setOrderNumber(orderNumber);
+                } catch (CodeRuleException e) {
+                    e.printStackTrace();
+                }
 
                 //根据是否有headerId判断是新建还是更新
                 Long headerId = omOrderHeaders.getHeaderId();
@@ -109,36 +120,28 @@ public class OmOrderHeadersServiceImpl extends BaseServiceImpl<OmOrderHeaders> i
                     }
                 }
             }
-            return omOrderHeadersList;
         }
-        return null;
+        return omOrderHeadersList;
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public List<OmOrderHeaders> updateOrderStatus(IRequest request, OmOrderHeaders omOrderHeaders) {
         List<OmOrderHeaders> omOrderHeadersList = new ArrayList<>();
         if(omOrderHeaders != null){
             String orderStatus = omOrderHeaders.getOrderStatus();
             //查询订单信息
             omOrderHeaders = omOrderHeadersService.selectByPrimaryKey(request, omOrderHeaders);
-
-            if("SUBMITED".equals(orderStatus) && ("NEW".equals(omOrderHeaders.getOrderStatus()) || "REJECTED".equals(omOrderHeaders.getOrderStatus()))){
-                omOrderHeaders.setOrderStatus(orderStatus);
-                omOrderHeadersService.updateByPrimaryKeySelective(request, omOrderHeaders);
-            }else if("APPROVED".equals(orderStatus) && "SUBMITED".equals(omOrderHeaders.getOrderStatus())){
-                omOrderHeaders.setOrderStatus(orderStatus);
-                omOrderHeadersService.updateByPrimaryKeySelective(request, omOrderHeaders);
-            }else if("REJECTED".equals(orderStatus) && "SUBMITED".equals(omOrderHeaders.getOrderStatus())){
-                omOrderHeaders.setOrderStatus(orderStatus);
-                omOrderHeadersService.updateByPrimaryKeySelective(request, omOrderHeaders);
-            }
+            //改变订单状态
+            omOrderHeaders.setOrderStatus(orderStatus);
+            omOrderHeadersService.updateByPrimaryKeySelective(request, omOrderHeaders);
             omOrderHeadersList.add(omOrderHeaders);
-
         }
         return omOrderHeadersList;
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public int myBatchDelete(IRequest request, OmOrderHeaders omOrderHeaders) {
         int count = 0;
         if (omOrderHeaders != null) {

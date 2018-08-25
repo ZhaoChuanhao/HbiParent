@@ -199,8 +199,8 @@
                 title: '<@spring.message "操作"/>',
                 width: 120,
                 template: function (dataItem) {
-                    var html = '<a href="javascript:void(0)" onclick="view(' + dataItem.bankId + ')" style="text-decoration: underline; color: blue; cursor: pointer;float: left; margin-right: 10px;"><@spring.message "hap.view"/></a>' +
-                        '<a href="javascript:void(0)" onclick="edit(' + dataItem.bankId + ')" style="text-decoration: underline; color: blue; cursor: pointer;float: left; margin-right: 10px;"><@spring.message "hap.edit"/></a>';
+                    var html = '<a href="javascript:void(0)" onclick="view(' + dataItem.bankId + ')" style="text-decoration: underline; color: blue; cursor: pointer; margin-right: 10px;"><@spring.message "hap.view"/></a>' +
+                        '<a href="javascript:void(0)" onclick="edit(' + dataItem.bankId + ')" style="text-decoration: underline; color: blue; cursor: pointer; margin-right: 10px;"><@spring.message "hap.edit"/></a>';
                     return html;
                 }
             },
