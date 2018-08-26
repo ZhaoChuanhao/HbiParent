@@ -585,7 +585,7 @@
                 headerId: headerId,
             },
             success:function () {
-                window.location.replace(document.referrer);
+                window.location.replace('${base.contextPath}/demo/om_order_headers.html');
                 Hap.showToast({
                     type: "success",
                     message: '<@spring.message "hap.mesg_delete"/>'
@@ -615,7 +615,7 @@
 
     //点击返回按钮刷新页面
     $("#back").click(function () {
-        window.location.replace(document.referrer);
+        window.location.replace('${base.contextPath}/demo/om_order_headers.html');
     });
 
     //打印pdf函数
