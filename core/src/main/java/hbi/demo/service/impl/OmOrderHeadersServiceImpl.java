@@ -69,12 +69,9 @@ public class OmOrderHeadersServiceImpl extends BaseServiceImpl<OmOrderHeaders> i
 
                     //保存行
                     List<OmOrderLines> omOrderLinesList = omOrderHeaders.getOmOrderLinesList();
-                    //查询最大行号
-                    /*Long maxLineNumber = omOrderLinesService.getMaxLineNumber();*/
                     //遍历集合，使每个OmOrderLines对象的行号加1,并绑定headerId
                     for (int i = 0; i < omOrderLinesList.size(); i++){
                         OmOrderLines omOrderLines = omOrderLinesList.get(i);
-                        /*omOrderLines.setLineNumber(maxLineNumber + i + 1);*/
                         omOrderLines.setHeaderId(headerId);
                         omOrderLines.setCompanyId(companyId);
                         omOrderLinesService.insertSelective(request, omOrderLines);
@@ -97,9 +94,6 @@ public class OmOrderHeadersServiceImpl extends BaseServiceImpl<OmOrderHeaders> i
                             //根据lineId是否为空，判断是新建还是更新
                             if (lineId == null) {
                                 //新建
-                                //查询最大行号
-                                /*Long maxLineNumber = omOrderLinesService.getMaxLineNumber();*/
-                                /*omOrderLines.setLineNumber(maxLineNumber + 1);*/
                                 omOrderLines.setHeaderId(headerId);
                                 omOrderLines.setCompanyId(companyId);
                                 omOrderLinesService.insertSelective(request, omOrderLines);
