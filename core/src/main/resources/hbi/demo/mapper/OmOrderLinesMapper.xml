@@ -54,6 +54,7 @@
         <if test="headerId != null and headerId != ''">
             AND line.HEADER_ID = #{headerId}
         </if>
+        ORDER BY LINE_NUMBER
     </select>
 
 </mapper>

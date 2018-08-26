@@ -46,8 +46,7 @@ public class OmOrderHeadersServiceImpl extends BaseServiceImpl<OmOrderHeaders> i
     public List<OmOrderHeaders> myBatchUpdate(IRequest request, List<OmOrderHeaders> omOrderHeadersList) {
         if (omOrderHeadersList != null && !omOrderHeadersList.isEmpty()) {
             for (OmOrderHeaders omOrderHeaders: omOrderHeadersList) {
-                //用于计算订单总金额
-                Long orderAmount = omOrderHeaders.getOrderAmount();
+
                 //用编码规则生成销售订单号
                 try {
                     String orderNumber = codeRuleProcessService.getRuleCode("HAP_RULE_DEMO_ORDER_NUMBER");
@@ -63,8 +62,6 @@ public class OmOrderHeadersServiceImpl extends BaseServiceImpl<OmOrderHeaders> i
                 if (headerId == null) {
                     //新建
                     //保存头
-                    omOrderHeaders.setOrderAmount(0L);
-                    orderAmount = omOrderHeaders.getOrderAmount();
                     omOrderHeadersService.insertSelective(request, omOrderHeaders);
                     //新建之后便有主键了
                     headerId = omOrderHeaders.getHeaderId();
@@ -73,18 +70,15 @@ public class OmOrderHeadersServiceImpl extends BaseServiceImpl<OmOrderHeaders> i
                     //保存行
                     List<OmOrderLines> omOrderLinesList = omOrderHeaders.getOmOrderLinesList();
                     //查询最大行号
-                    Long maxLineNumber = omOrderLinesService.getMaxLineNumber();
+                    /*Long maxLineNumber = omOrderLinesService.getMaxLineNumber();*/
                     //遍历集合，使每个OmOrderLines对象的行号加1,并绑定headerId
                     for (int i = 0; i < omOrderLinesList.size(); i++){
                         OmOrderLines omOrderLines = omOrderLinesList.get(i);
-                        omOrderLines.setLineNumber(maxLineNumber + i + 1);
+                        /*omOrderLines.setLineNumber(maxLineNumber + i + 1);*/
                         omOrderLines.setHeaderId(headerId);
                         omOrderLines.setCompanyId(companyId);
-                        orderAmount += omOrderLines.getOrderdQuantity() * omOrderLines.getUnitSellingPrice();
                         omOrderLinesService.insertSelective(request, omOrderLines);
                     }
-                    //重新把总金额保存到数据库
-                    omOrderHeaders.setOrderAmount(orderAmount);
                     omOrderHeadersService.updateByPrimaryKeySelective(request, omOrderHeaders);
 
                     //再重新查一遍订单信息（为了多表复合查询查出公司名称等）
@@ -100,13 +94,12 @@ public class OmOrderHeadersServiceImpl extends BaseServiceImpl<OmOrderHeaders> i
                         for (int i = 0; i < omOrderLinesList.size(); i++) {
                             OmOrderLines omOrderLines = omOrderLinesList.get(i);
                             Long lineId = omOrderLines.getLineId();
-                            orderAmount += omOrderLines.getOrderdQuantity() * omOrderLines.getUnitSellingPrice();
                             //根据lineId是否为空，判断是新建还是更新
                             if (lineId == null) {
                                 //新建
                                 //查询最大行号
-                                Long maxLineNumber = omOrderLinesService.getMaxLineNumber();
-                                omOrderLines.setLineNumber(maxLineNumber + 1);
+                                /*Long maxLineNumber = omOrderLinesService.getMaxLineNumber();*/
+                                /*omOrderLines.setLineNumber(maxLineNumber + 1);*/
                                 omOrderLines.setHeaderId(headerId);
                                 omOrderLines.setCompanyId(companyId);
                                 omOrderLinesService.insertSelective(request, omOrderLines);
@@ -114,8 +107,6 @@ public class OmOrderHeadersServiceImpl extends BaseServiceImpl<OmOrderHeaders> i
                                 omOrderLinesService.updateByPrimaryKeySelective(request, omOrderLines);
                             }
                         }
-                        //重新把总金额保存到数据库
-                        omOrderHeaders.setOrderAmount(orderAmount);
                         omOrderHeadersService.updateByPrimaryKeySelective(request, omOrderHeaders);
                     }
                 }

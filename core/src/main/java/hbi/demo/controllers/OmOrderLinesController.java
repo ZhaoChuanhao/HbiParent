@@ -1,19 +1,19 @@
 package hbi.demo.controllers;
 
-import org.springframework.stereotype.Controller;
-import com.hand.hap.system.controllers.BaseController;
 import com.hand.hap.core.IRequest;
+import com.hand.hap.system.controllers.BaseController;
 import com.hand.hap.system.dto.ResponseData;
 import hbi.demo.dto.OmOrderLines;
 import hbi.demo.service.IOmOrderLinesService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import javax.servlet.http.HttpServletRequest;
-import org.springframework.validation.BindingResult;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -63,4 +63,10 @@ import java.util.List;
         service.batchDelete(dto);
         return new ResponseData();
     }
+
+    /*@RequestMapping(value = "/hap/om/order/lines/getMaxLineNumber")
+    @ResponseBody
+    public Long getMaxLineNumber(HttpServletRequest request,OmOrderLines dto){
+        return service.getMaxLineNumber();
+    }*/
     }

@@ -69,7 +69,7 @@
                 )
             </if>
         </where>
-        ORDER BY head.HEADER_ID
+        ORDER BY head.ORDER_NUMBER
     </select>
 
     <select id="selectExcelData" parameterType="hbi.demo.dto.OmOrderHeaders" resultMap="BaseResultMap">
@@ -121,6 +121,7 @@
                 )
             </if>
         </where>
+        ORDER BY head.ORDER_NUMBER
     </select>
 
 </mapper>
