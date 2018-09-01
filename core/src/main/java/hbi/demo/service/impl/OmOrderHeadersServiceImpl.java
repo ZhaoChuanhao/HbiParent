@@ -68,12 +68,15 @@ public class OmOrderHeadersServiceImpl extends BaseServiceImpl<OmOrderHeaders> i
 
                     //保存行
                     List<OmOrderLines> omOrderLinesList = omOrderHeaders.getOmOrderLinesList();
-                    //遍历集合，使每个OmOrderLines绑定headerId
-                    for (OmOrderLines omOrderLines : omOrderLinesList) {
-                        omOrderLines.setHeaderId(headerId);
-                        omOrderLines.setCompanyId(companyId);
-                        omOrderLinesService.insertSelective(request, omOrderLines);
+                    if(omOrderLinesList != null && !omOrderLinesList.isEmpty()){
+                        //遍历集合，使每个OmOrderLines绑定headerId
+                        for (OmOrderLines omOrderLines : omOrderLinesList) {
+                            omOrderLines.setHeaderId(headerId);
+                            omOrderLines.setCompanyId(companyId);
+                            omOrderLinesService.insertSelective(request, omOrderLines);
+                        }
                     }
+
                     //再重新查一遍订单信息（为了多表复合查询查出公司名称等）
                     omOrderHeadersList = omOrderHeadersMapper.selectOrderHeaders(omOrderHeaders);
 

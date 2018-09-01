@@ -25,6 +25,10 @@
                             //回写主键
                             headerId = data.rows[0].headerId;
                         }
+                        if(viewModel.model.get("orderAmount") == null || viewModel.model.get("orderAmount") == ""){
+                            // 设置订单金额为0
+                            viewModel.model.set("orderAmount",0);
+                        }
                         $('#grid1').data('kendoGrid').dataSource.read();
                         if(submitFlag == "Y"){
                             $("#submit").removeAttr("disabled");
@@ -70,6 +74,10 @@
                 var row = json.rows[0] || {};
                 for (var k in row) {
                     viewModel.model.set(k, row[k]);
+                }
+                if(viewModel.model.get("orderAmount") == null || viewModel.model.get("orderAmount") == ""){
+                    // 设置订单金额为0
+                    viewModel.model.set("orderAmount",0);
                 }
             }
         });

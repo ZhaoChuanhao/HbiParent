@@ -287,7 +287,10 @@
             {
                 field: "orderAmount",
                 title: '<@spring.message "hap.om.order.headers.orderAmount"/>',
-                width: 120
+                width: 120,
+                template:function (dataItem) {
+                    return dataItem['orderAmount'] || 0;
+                }
             },
         ],
         editable: false
