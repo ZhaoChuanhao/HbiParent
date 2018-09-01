@@ -26,10 +26,12 @@
                             headerId = data.rows[0].headerId;
                         }
                         $('#grid1').data('kendoGrid').dataSource.read();
-                        $("#submit").removeAttr("disabled");
-                        $("#submit").bind("click",function () {
-                            updateOrderStatus('SUBMITED');
-                        });
+                        if(submitFlag == "Y"){
+                            $("#submit").removeAttr("disabled");
+                            $("#submit").bind("click",function () {
+                                updateOrderStatus('SUBMITED');
+                            });
+                        }
                         $("#wholeDelete").removeAttr("disabled");
                         $("#wholeDelete").bind("click",function () {
                             removeFunction();
@@ -264,7 +266,7 @@
                                 <span class="btn btn-success k-grid-save-changes" data-bind="click:saveFunction" style="float:left;margin-right:5px;margin-bottom:5px;">
                                     <i class="fa fa-save" style="margin-right:3px;"></i><@spring.message "hap.save"/>
                                 </span>
-                                <span class="btn btn-danger pull-left" data-bind="click:remove"  style="float:left;margin-right:5px;margin-bottom:5px;">
+                                <span class="btn btn-danger pull-left delete_button" data-bind="click:remove"  style="float:left;margin-right:5px;margin-bottom:5px;">
                                     <i class="fa fa-trash-o" style="margin-right:3px;"></i><@spring.message "hap.delete"/>
                                 </span>
                             </div>
@@ -287,7 +289,7 @@
                                 <span class="btn btn-success k-grid-save-changes" data-bind="click:saveFunction" style="float:left;margin-right:5px;margin-bottom:5px;">
                                     <i class="fa fa-save" style="margin-right:3px;"></i><@spring.message "hap.save"/>
                                 </span>
-                                <span class="btn btn-danger pull-left" data-bind="click:remove"  style="float:left;margin-right:5px;margin-bottom:5px;">
+                                <span class="btn btn-danger pull-left delete_button" data-bind="click:remove"  style="float:left;margin-right:5px;margin-bottom:5px;">
                                     <i class="fa fa-trash-o" style="margin-right:3px;"></i><@spring.message "hap.delete"/>
                                 </span>
                             </div>
@@ -325,7 +327,7 @@
             destroy: {
                 url: BaseUrl + "/hap/om/order/lines/remove",
                 type: "POST",
-                contentType: "application/json"
+                contentType: "application/json",
             },
             create: {
                 url: BaseUrl + "/hap/om/order/lines/submit",
@@ -335,6 +337,9 @@
             parameterMap: function (options, type) {
                 if (type !== "read" && options.models) {
                     var datas = Hap.prepareSubmitParameter(options, type)
+                    if(type === "destroy"){
+                        flush_orderAmount();
+                    }
                     return kendo.stringify(datas);
                 } else if (type === "read") {
                     return Hap.prepareQueryParameter(viewModel.model.toJSON(), options)
@@ -461,15 +466,8 @@
                                 var count = options.model.orderdQuantity;
                                 var price = options.model.unitSellingPrice;
                                 options.model.set('amount',count * price);
-                                var v = dataSource.data();
-                                var m = 0;
-                                for (var i in v) {
-                                    if(isNaN(v[i].amount)){
-                                        break;
-                                    }
-                                    m = parseFloat(m) + parseFloat(v[i].amount);
-                                }
-                                viewModel.model.set("orderAmount",m);
+                                //刷新订单总金额
+                                flush_orderAmount();
                             }
                     });
                 }
@@ -493,15 +491,8 @@
                                 var count = options.model.orderdQuantity;
                                 var price = options.model.unitSellingPrice;
                                 options.model.set('amount',count * price);
-                                var v = dataSource.data();
-                                var m = 0;
-                                for (var i in v) {
-                                    if(isNaN(v[i].amount)){
-                                        break;
-                                    }
-                                    m = parseFloat(m) + parseFloat(v[i].amount);
-                                }
-                                viewModel.model.set("orderAmount",m);
+                                //刷新订单总金额
+                                flush_orderAmount();
                             }
                         });
 
@@ -585,7 +576,7 @@
                 headerId: headerId,
             },
             success:function () {
-                window.location.replace('${base.contextPath}/demo/om_order_headers.html');
+                window.self.parent.location.reload();
                 Hap.showToast({
                     type: "success",
                     message: '<@spring.message "hap.mesg_delete"/>'
@@ -594,28 +585,9 @@
         });
     }
 
-    /*//新建时自动带出行号
-    $(".new-button").click(function () {
-        $.ajax({
-            type : "POST",
-            url: "${base.contextPath}/hap/om/order/lines/getMaxLineNumber",
-
-            success:function (data) {
-                dataSource.data()[0].lineNumber = data;
-
-                var v = dataSource.data()[0];
-                console.log(v)
-                v.set(data);
-                v.parent().next().focus();
-                $("#code").focus();
-
-            }
-        });
-    })*/
-
     //点击返回按钮刷新页面
     $("#back").click(function () {
-        window.location.replace('${base.contextPath}/demo/om_order_headers.html');
+        window.self.parent.location.reload();
     });
 
     //打印pdf函数
@@ -692,6 +664,19 @@
 
     var save = $("#save").kendoButton({
     }).data("kendoButton");
+
+    //刷新订单总金额
+    function flush_orderAmount() {
+        var v = dataSource.data();
+        var m = 0;
+        for (var i in v) {
+            if(isNaN(v[i].amount)){
+                break;
+            }
+            m = parseFloat(m) + parseFloat(v[i].amount);
+        }
+        viewModel.model.set("orderAmount",m);
+    }
 
     //判断查询还是编辑
     $(function () {
@@ -805,7 +790,20 @@
         $("#wholeDelete").attr({"disabled":"disabled","onclick":null});
         $("#wholeDelete").attr("disabled","disabled").unbind();
         $("#print").attr({"disabled":"disabled","onclick":null});
+        $("#print").attr("disabled","disabled").unbind();
     }
+
+    /*//新建时自动带出行号
+    $(".new-button").click(function () {
+        $.ajax({
+            type : "POST",
+            url: "${base.contextPath}/hap/om/order/lines/getMaxLineNumber",
+
+            success:function (data) {
+                dataSource.data()[0].lineNumber = data;
+            }
+        });
+    })*/
 
 </script>
 

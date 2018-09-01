@@ -37,7 +37,6 @@ public class OmOrderHeadersServiceImpl extends BaseServiceImpl<OmOrderHeaders> i
 
     @Override
     public List<OmOrderHeaders> selectExcelData(IRequest request, OmOrderHeaders omOrderHeaders, int pageNum, int pageSize) {
-        //PageHelper.startPage(pageNum, pageSize);
         return omOrderHeadersMapper.selectExcelData(omOrderHeaders);
     }
 
@@ -69,15 +68,12 @@ public class OmOrderHeadersServiceImpl extends BaseServiceImpl<OmOrderHeaders> i
 
                     //保存行
                     List<OmOrderLines> omOrderLinesList = omOrderHeaders.getOmOrderLinesList();
-                    //遍历集合，使每个OmOrderLines对象的行号加1,并绑定headerId
-                    for (int i = 0; i < omOrderLinesList.size(); i++){
-                        OmOrderLines omOrderLines = omOrderLinesList.get(i);
+                    //遍历集合，使每个OmOrderLines绑定headerId
+                    for (OmOrderLines omOrderLines : omOrderLinesList) {
                         omOrderLines.setHeaderId(headerId);
                         omOrderLines.setCompanyId(companyId);
                         omOrderLinesService.insertSelective(request, omOrderLines);
                     }
-                    omOrderHeadersService.updateByPrimaryKeySelective(request, omOrderHeaders);
-
                     //再重新查一遍订单信息（为了多表复合查询查出公司名称等）
                     omOrderHeadersList = omOrderHeadersMapper.selectOrderHeaders(omOrderHeaders);
 
@@ -88,8 +84,7 @@ public class OmOrderHeadersServiceImpl extends BaseServiceImpl<OmOrderHeaders> i
                     //保存行的时候需要区分行是新建还是更新
                     List<OmOrderLines> omOrderLinesList = omOrderHeaders.getOmOrderLinesList();
                     if (omOrderLinesList != null && !omOrderLinesList.isEmpty()) {
-                        for (int i = 0; i < omOrderLinesList.size(); i++) {
-                            OmOrderLines omOrderLines = omOrderLinesList.get(i);
+                        for (OmOrderLines omOrderLines : omOrderLinesList) {
                             Long lineId = omOrderLines.getLineId();
                             //根据lineId是否为空，判断是新建还是更新
                             if (lineId == null) {
@@ -98,10 +93,11 @@ public class OmOrderHeadersServiceImpl extends BaseServiceImpl<OmOrderHeaders> i
                                 omOrderLines.setCompanyId(companyId);
                                 omOrderLinesService.insertSelective(request, omOrderLines);
                             } else {
+                                //更新
+                                omOrderLines.setCompanyId(companyId);
                                 omOrderLinesService.updateByPrimaryKeySelective(request, omOrderLines);
                             }
                         }
-                        omOrderHeadersService.updateByPrimaryKeySelective(request, omOrderHeaders);
                     }
                 }
             }

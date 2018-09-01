@@ -47,13 +47,6 @@ import java.util.List;
         return responseData;
         }
         IRequest requestCtx = createRequestContext(request);
-        //查询最大行号
-        Long maxLineNumber = service.getMaxLineNumber();
-        //遍历集合，使每个OmOrderLines对象的行号加1
-        for (int i = 0; i < dto.size(); i++){
-            OmOrderLines omOrderLines = dto.get(i);
-            omOrderLines.setLineNumber(maxLineNumber + i + 1);
-        }
         return new ResponseData(service.batchUpdate(requestCtx, dto));
     }
 
@@ -64,9 +57,4 @@ import java.util.List;
         return new ResponseData();
     }
 
-    /*@RequestMapping(value = "/hap/om/order/lines/getMaxLineNumber")
-    @ResponseBody
-    public Long getMaxLineNumber(HttpServletRequest request,OmOrderLines dto){
-        return service.getMaxLineNumber();
-    }*/
     }
