@@ -416,7 +416,7 @@
             date: new Date(),
             sheets: [ // sheet数组，如需导出多个sheet在此完成
                 {
-                    name: '订单数据',       //sheet 名称
+                    name: '<@spring.message "hap.om.order.headers.orderdata"/>',       //sheet 名称
                     frozenRows: 1,         //冻结第一行
                     frozenColumns: 1,      //冻结第一列
                     columns: columns,      //列
@@ -428,7 +428,7 @@
         //设置文件名
         kendo.saveAs({
             dataURI: workbook.toDataURL(), //数据源
-            fileName: '订单导出信息' //文件名
+            fileName: '<@spring.message "hap.om.order.headers.excelname"/>' //文件名
         });
     }
 

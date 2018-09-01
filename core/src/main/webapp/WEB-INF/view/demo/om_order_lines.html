@@ -643,7 +643,7 @@
                             }
                         }
                     }
-                    pdf.save('订单明细PDF.pdf');
+                    pdf.save('<@spring.message "hap.om.order.headers.pdfname"/>');
                 },
                 //背景设为白色（默认为黑色）
                 background: "#fff"
@@ -801,17 +801,6 @@
         $("#print").attr("disabled","disabled").unbind();
     }
 
-    /*//新建时自动带出行号
-    $(".new-button").click(function () {
-        $.ajax({
-            type : "POST",
-            url: "${base.contextPath}/hap/om/order/lines/getMaxLineNumber",
-
-            success:function (data) {
-                dataSource.data()[0].lineNumber = data;
-            }
-        });
-    })*/
 
 </script>
 
